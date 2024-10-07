@@ -48,6 +48,10 @@ class TelaCadastroPassageiro(tk.Toplevel):
         self.cadastrar_button = tk.Button(self.container, text="Cadastrar", font=("Arial", 12, "bold"), bg="#4CAF50", fg="white", activebackground="#45a049", activeforeground="white", command=self.cadastrar)
         self.cadastrar_button.grid(row=5, columnspan=2, pady=20, ipadx=20, ipady=5)
 
+        # Botão Login (para retornar à tela de login)
+        self.login_button = tk.Button(self.container, text="Voltar ao Login", font=("Arial", 12, "bold"), bg="#2196F3", fg="white", activebackground="#1976D2", activeforeground="white", command=self.voltar_login)
+        self.login_button.grid(row=6, columnspan=2, pady=10, ipadx=20, ipady=5)
+
     def cadastrar(self):
         nome = self.nome_entry.get()
         cpf = self.cpf_entry.get()
@@ -62,3 +66,7 @@ class TelaCadastroPassageiro(tk.Toplevel):
             self.destroy()
         else:
             messagebox.showerror("Erro", mensagem)
+
+    def voltar_login(self):
+        self.destroy()  # Fecha a tela de cadastro
+
