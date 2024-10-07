@@ -58,7 +58,6 @@ class TelaLogin(tk.Tk):
             messagebox.showerror("Erro", mensagem)
 
     def abrir_cadastro(self):
-        self.destroy()
         TelaCadastroPassageiro(self.controlador)
 
     def abrir_login_admin(self):
