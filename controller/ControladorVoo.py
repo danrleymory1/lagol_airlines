@@ -1,11 +1,11 @@
-from dao.DAOVoos import DAOVoos
+from dao.DAOVoo import DAOVoo
 from model.Voos import Voos
 from model.Aeronaves import Aeronaves
 from model.Pessoas import Pilotos, Aeromocas
 
 class ControladorVoo:
     def __init__(self):
-        self.dao_voos = DAOVoos()
+        self.dao_voos = DAOVoo()
 
     def cadastrar_voos(self, origem, destino, aeromocas, pilotos, data, horario, aeronave, assentos):
         # Verificações detalhadas de parâmetros
