@@ -49,15 +49,15 @@ class TelaVerVoos:
                 sys.exit()
             elif evento.startswith('escolher_'):
                 voo_cod = evento.split('_')[1]
-                self.abrir_tela_fazer_reserva()
+                self.abrir_tela_fazer_reserva(voo_cod)
 
         self.janela.close()
 
-    def abrir_tela_fazer_reserva(self):
+    def abrir_tela_fazer_reserva(self, voo_cod):
         self.janela.close()
 
         from view.ViewFazerReserva import TelaFazerReserva
-        TelaFazerReserva(self.controlador).abrir()
+        TelaFazerReserva(self.controlador, voo_cod).abrir()
 
 
     def retornar_tela_cliente(self):

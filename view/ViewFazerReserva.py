@@ -2,16 +2,20 @@ import sys
 import PySimpleGUI as Sg
 
 class TelaFazerReserva:
-    def __init__(self, controlador):
+    def __init__(self, controlador, voo_cod):
         self.controlador = controlador
         self.janela = None
+        self.__voo_cod = voo_cod
+        self.__voo = self.controlador.controlador_voo.buscar_por_cod(self.__voo_cod)
         self.criar_janela()
+        
 
 
     def criar_janela(self):
+
         dados_voo_layout = [
-            [Sg.Text("COD: 12345", size=(15, 1)), Sg.Text("Origem: São Paulo", size=(20, 1)), Sg.Text("Data: 01/01", size=(15, 1))],
-            [Sg.Text("Avião: 321", size=(15, 1)), Sg.Text("Destino: Florianopolis", size=(20, 1))],
+            [Sg.Text(f"COD: {self.__voo.cod}", size=(15, 1)), Sg.Text(f"Origem: {self.__voo.origem}", size=(20, 1)), Sg.Text(f"Data: {self.__voo.data}", size=(15, 1))],
+            [Sg.Text(f"Avião: {self.__voo.aeronave}", size=(15, 1)), Sg.Text(f"Destino: {self.__voo.destino}", size=(20, 1))],
         ]
 
         dados_passageiro_layout = [
@@ -19,7 +23,8 @@ class TelaFazerReserva:
             [Sg.Radio("Sim", "passageiro_usuario", key="usuario_sim", enable_events=True), 
             Sg.Radio("Não", "passageiro_usuario", key="usuario_nao", enable_events=True)],
             [Sg.Text("Caso não:")],
-            [Sg.InputText(key="nome", size=(15, 1), tooltip="Nome", disabled=True), 
+            [Sg.Text("Nome                      CPF                      Data de nascimento")],
+            [Sg.InputText(key="nome", size=(15, 1), tooltip="Nome", disabled=True,), 
             Sg.InputText(key="cpf", size=(15, 1), tooltip="CPF", disabled=True), 
             Sg.InputText(key="nascimento", size=(15, 1), tooltip="Nascimento", disabled=True)],
         ]
@@ -27,7 +32,7 @@ class TelaFazerReserva:
         layout = [
             [Sg.Frame("Dados do voo", dados_voo_layout)],
             [Sg.Frame("Dados do passageiro", dados_passageiro_layout)],
-            [Sg.Button("Voltar", size=(10, 1), button_color=("white", "pink")), Sg.Push(), Sg.Button("Reservar", size=(10, 1), button_color=("white", "pink"))]
+            [Sg.Button("Voltar", size=(10, 1)), Sg.Push(), Sg.Button("Reservar", size=(10, 1))]
         ]
 
         self.janela = Sg.Window("Reserva de Voo", layout)

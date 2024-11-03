@@ -59,6 +59,9 @@ class ControladorVoo:
 
     def buscar_voos(self, filtros):
         return self.__dao.buscar_voos(filtros)
+    
+    def buscar_por_cod(self, cod):
+        return self.__dao.buscar_por_cod(cod)
 
     def alterar_voo(self, cod, novo_nome): 
         Voos = self.__dao.buscar_por_cod(cod)

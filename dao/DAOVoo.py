@@ -17,10 +17,12 @@ class DAOVoo(DAO):
             return False
 
     def buscar_por_cod(self, cod):
+
         voo_dict = self.__collection.find_one({"cod": cod})
 
         if voo_dict:
             return Voos(
+                cod=voo_dict['cod'],
                 aeromocas=voo_dict['aeromocas'],
                 aeronave=voo_dict['aeronave'],
                 assentos=voo_dict['assentos'],
