@@ -34,7 +34,6 @@ class DAO(ABC):
     def adicionar(self, obj):
         pass
 
-    @abstractmethod
     def buscar_por_cpf(self, cpf):
         pass
 

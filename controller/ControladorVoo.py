@@ -1,13 +1,13 @@
 
-from dao.DAOVoo import DAOVoos
+from dao.DAOVoo import DAOVoo
 from model.Aeronaves import Aeronaves
 from model.Voos import Voos
 
-class ControladorVoos:
+class ControladorVoo:
     def __init__(self):
-        self.__dao = DAOVoos()
+        self.__dao = DAOVoo()
 
-    def cadastrar_Voos(self, origem, destino, aeromocas, pilotos, data, horario, aeronave, assentos):
+    def cadastrar_voos(self, origem, destino, aeromocas, pilotos, data, horario, aeronave, assentos):
         if not origem:
             return False, "Adicione uma origem."
         
@@ -54,13 +54,13 @@ class ControladorVoos:
         else:
             return False, "Erro ao cadastrar o voo. Tente novamente."
 
-    def buscar_todos_Voos(self):
-        return self.__dao.buscar_todos()
+    def buscar_todos_voos(self):
+        return self.__dao.buscar_voos(None)
 
-    def buscar_Voos(self, filtros):
-        return self.__dao.buscar_por_cpf(filtros)
+    def buscar_voos(self, filtros):
+        return self.__dao.buscar_voos(filtros)
 
-    def alterar_Voo(self, cod, novo_nome): 
+    def alterar_voo(self, cod, novo_nome): 
         Voos = self.__dao.buscar_por_cod(cod)
         if not Voos:
             return False, "Voo não encontrado."
@@ -70,7 +70,7 @@ class ControladorVoos:
             return True, "Dados do voo alterados com sucesso!"
         return False, "Erro ao alterar os dados do voo."
 
-    def deletar_Voo(self, cod):
+    def deletar_voo(self, cod):
         Voo = self.__dao.buscar_por_cpf(cod)
         if not Voo:
             return False, "Voo não encontrado."

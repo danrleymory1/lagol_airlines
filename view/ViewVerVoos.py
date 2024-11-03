@@ -23,14 +23,18 @@ class TelaVerVoos:
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
+        print("AAAAAAAAAAAAAAAAA")
+        print(voos)
         if voos:
             voos_layout = []
             for voo in voos:
+                print("BBBBBBBBBBBBBBBBBb")
+                print(voo)
                 voos_layout.append([
                     Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data:<15}"),
-                    Sg.Push(),
-                    Sg.Button('Alterar', key=f'alterar_{voo.cpf}', size=(10, 1)),
-                    Sg.Button('Deletar', key=f'deletar_{voo.cpf}', size=(10, 1)) 
+                    Sg.Push()
+                    #Sg.Button('Alterar', key=f'alterar_{voo.cod}', size=(10, 1)),
+                    #Sg.Button('Deletar', key=f'deletar_{voo.cod}', size=(10, 1)) 
                 ])
             return voos_layout
         else:

@@ -33,9 +33,10 @@ class DAOVoo(DAO):
         return None
 
 
+
     def buscar_voos(self, filtros):
         voos_dict = self.__collection.find(filtros)
-        voos = []
+        voos_list = []
 
         if voos_dict:
             for voos in voos_dict:
@@ -49,7 +50,8 @@ class DAOVoo(DAO):
                     origem=voos['origem'],
                     pilotos=voos['pilotos']
                 )
-            return voos
+                voos_list.append(voo)
+            return voos_list
         return None
 
     def atualizar(self, voo):
