@@ -1,6 +1,8 @@
 import sys
 import PySimpleGUI as Sg
 
+from view.ViewVerTicket import TelaVerTicket
+
 class TelaFazerReserva:
     def __init__(self, controlador, voo_cod):
         self.controlador = controlador
@@ -63,11 +65,17 @@ class TelaFazerReserva:
                 if values["usuario_nao"] and (not values["nome"] or not values["cpf"] or not values["nascimento"]):
                     Sg.popup("Erro", "Preencha os dados do passageiro.")
                 else:
+                    
                     Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
+                    self.ir_para_ticket()
 
     def retornar_tela_voos(self):
-            self.janela.close()
-            from view.ViewVerVoos import TelaVerVoos
-            TelaVerVoos(self.controlador).abrir()
+        self.janela.close()
+        from view.ViewVerVoos import TelaVerVoos
+        TelaVerVoos(self.controlador).abrir()
+    
+    def ir_pra_ticket(self):
+        self.janela.close()
+        TelaVerTicket(self.controlador).abrir()
 
 
