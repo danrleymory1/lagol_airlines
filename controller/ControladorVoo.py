@@ -1,23 +1,36 @@
 
 from dao.DAOVoo import DAOVoos
+from model.Aeronaves import Aeronaves
 from model.Voos import Voos
 
 class ControladorVoos:
     def __init__(self):
         self.__dao = DAOVoos()
 
-    def cadastrar_Voos(self, origem, destino, aeromoca, piloto, data, horario, aeronave, assentos):
+    def cadastrar_Voos(self, origem, destino, aeromocas, pilotos, data, horario, aeronave, assentos):
         if not origem:
             return False, "Adicione uma origem."
+        
+        if not isinstance(origem, str):
+            return False, "Erro: Origem tem que ser uma string."
         
         if not destino:
             return False, "Adicione um destino."
         
-        if not aeromoca:
+        if not isinstance(destino, str):
+            return False, "Erro: Destino tem que ser uma string"
+        
+        if not aeromocas:
             return False, "Adicione as aeromoças."
         
-        if not piloto:
+        if not isinstance(aeromocas, list):
+            return False, "Erro: Aeromoças deve ser uma lista."
+        
+        if not pilotos:
             return False, "Adicione os pilotos."
+        
+        if not isinstance(aeromocas, list):
+            return False, "Erro: Aeromoças deve ser uma lista."
         
         if not data:
             return False, "Adicione uma data."
@@ -28,10 +41,13 @@ class ControladorVoos:
         if not aeronave:
             return False, "Adicione uma aeronave."
         
+        if not isinstance(aeronave, Aeronaves):
+            return False, "Erro: Aeronave deve ser uma instancia da classe Aeronaves."
+        
         if not assentos:
             return False, "Adicione os assentos."
 
-        Voo = Voos(origem=origem, destino=destino, aeromoca=aeromoca, piloto=piloto, data=data, horario=horario, aeronave=aeronave, assentos=assentos)
+        Voo = Voos(origem=origem, destino=destino, aeromoca=aeromocas, piloto=pilotos, data=data, horario=horario, aeronave=aeronave, assentos=assentos)
 
         if self.__dao.adicionar(Voo):
             return True, "Cadastro do voo realizado com sucesso!"

@@ -5,15 +5,15 @@ from model.Pessoas import Aeromocas, Pilotos
 
 class Voos:
 
-    def __init__(self, cod:str, aeronave:Aeronave, assentos:dict, origem:str, destino:str, data:datetime, piloto:Piloto, aeromoca:Aeromoca):
+    def __init__(self, cod:str, aeronave:Aeronaves, assentos:dict, origem:str, destino:str, data:datetime, pilotos:Pilotos, aeromocas:Aeromocas):
         self.__cod = cod
         self.__aeronave = aeronave
         self.__assentos = assentos
         self.__origem = origem
         self.__destino = destino
         self.__data = data
-        self.__piloto = piloto
-        self.__aeromoca = aeromoca
+        self.__pilotos = pilotos
+        self.__aeromocas = aeromocas
 
     @property
     def cod(self):
@@ -30,7 +30,7 @@ class Voos:
     
     @aeronave.setter
     def aeronave(self, new_aeronave):
-        if isinstance(new_aeronave, Aeronave):
+        if isinstance(new_aeronave, Aeronaves):
             self.__aeronave = new_aeronave
 
     @property
@@ -70,19 +70,19 @@ class Voos:
             self.__data = new_data
     
     @property
-    def piloto(self):
-        return self.__piloto
+    def pilotos(self):
+        return self.__pilotos
     
-    @piloto.setter
-    def piloto(self, new_piloto):
-        if isinstance(new_piloto, Piloto):
-            self.__piloto = new_piloto
+    @pilotos.setter
+    def pilotos(self, new_piloto):
+        if isinstance(new_piloto, Pilotos):
+            self.__pilotos = new_piloto
 
     @property
-    def aeromoca(self):
-        return self.__aeromoca
+    def aeromocas(self):
+        return self.__aeromocas
     
-    @aeromoca.setter
-    def aeromoca(self, new_aeromoca):
-        if isinstance(new_aeromoca, Aeromoca):
-            self.__aeromoca = new_aeromoca
+    @aeromocas.setter
+    def aeromocas(self, new_aeromoca):
+        if isinstance(new_aeromoca, list):
+            self.__aeromocas = new_aeromoca

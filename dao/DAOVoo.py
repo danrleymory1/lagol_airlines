@@ -21,7 +21,7 @@ class DAOVoo(DAO):
 
         if voo_dict:
             return Voos(
-                aeromoca=voo_dict['aeromoca'],
+                aeromocas=voo_dict['aeromocas'],
                 aeronave=voo_dict['aeronave'],
                 assentos=voo_dict['assentos'],
                 data=voo_dict['data'],
@@ -40,7 +40,7 @@ class DAOVoo(DAO):
         if voos_dict:
             for voos in voos_dict:
                 voo = Voos(
-                    aeromoca=voos['aeromoca'],
+                    aeromocas=voos['aeromocas'],
                     aeronave=voos['aeronave'],
                     assentos=voos['assentos'],
                     data=voos['data'],
@@ -58,7 +58,7 @@ class DAOVoo(DAO):
                 {"cod": voo.cod},
                 {"$set": {
                     
-                    "aeromoca": voo.aeromoca,
+                    "aeromocas": voo.aeromocas,
                     "aeronave": voo.aeronave,
                     "assentos": voo.assentos,
                     "data": voo.data,
