@@ -13,7 +13,7 @@ class TelaVerVoos:
         layout = [
             [Sg.Button('Retornar', size=(10, 1)), Sg.Push()],
             [Sg.Push(), Sg.Text('Ver voos', font=("Arial", 14)), Sg.Push()],
-            [Sg.Column([[Sg.Text(f"{'Origem':<20} {'Destino':<20} {'Data':<15}")]])],  # Cabeçalho da lista
+            [Sg.Column([[Sg.Text(f"{'Origem':<20} {'Destino':<20} {'Data':<15} {'Horario'}")]])],  # Cabeçalho da lista
             [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(500, 300))],
             
         ]
@@ -23,17 +23,13 @@ class TelaVerVoos:
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
-        print("AAAAAAAAAAAAAAAAA")
-        print(voos)
         if voos:
             voos_layout = []
             for voo in voos:
-                print("BBBBBBBBBBBBBBBBBb")
-                print(voo)
                 voos_layout.append([
-                    Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data:<15}"),
-                    Sg.Push()
-                    #Sg.Button('Alterar', key=f'alterar_{voo.cod}', size=(10, 1)),
+                    Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data:<15} {voo.horario_decolagem:<8}"),
+                    Sg.Push(),
+                    Sg.Button('Escolher', key=f'escolher_{voo.cod}', size=(10, 1)),
                     #Sg.Button('Deletar', key=f'deletar_{voo.cod}', size=(10, 1)) 
                 ])
             return voos_layout
@@ -48,12 +44,13 @@ class TelaVerVoos:
             if evento == Sg.WINDOW_CLOSED or evento == 'Retornar':
                 self.retornar_tela_cliente()
                 break
-            elif evento == 'Escolher Voo':
-                self.escolher_voo()
+            elif evento.startswith('escolher_'):
+                voo_cod = evento.split('_')[1]
+                self.abrir_tela_fazer_reserva()
 
         self.janela.close()
 
-    def escolher_voo(self):
+    def abrir_tela_fazer_reserva(self):
         self.janela.close()
 
         from view.ViewFazerReserva import TelaFazerReserva

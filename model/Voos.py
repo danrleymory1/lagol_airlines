@@ -5,8 +5,9 @@ from model.Pessoas import Aeromocas, Pilotos
 
 class Voos:
 
-    def __init__(self,aeronave:Aeronaves, assentos:dict, origem:str, destino:str, data:datetime,horario_decolagem:str, pilotos:Pilotos, aeromocas:Aeromocas):
+    def __init__(self, cod:str, aeronave:Aeronaves, assentos:dict, origem:str, destino:str, data:datetime,horario_decolagem:str, pilotos:Pilotos, aeromocas:Aeromocas):
     
+        self.__cod = cod
         self.__aeronave = aeronave
         self.__assentos = assentos
         self.__origem = origem
@@ -15,8 +16,15 @@ class Voos:
         self.__horario_decolagem = horario_decolagem
         self.__pilotos = pilotos
         self.__aeromocas = aeromocas
-
-  
+        
+    @property
+    def cod(self):
+        return self.__cod
+    
+    @cod.setter
+    def cod(self, new_cod):
+        if isinstance(new_cod, str):
+            self.__cod = new_cod
 
     @property
     def aeronave(self):

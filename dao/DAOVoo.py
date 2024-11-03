@@ -41,6 +41,7 @@ class DAOVoo(DAO):
         if voos_dict:
             for voos in voos_dict:
                 voo = Voos(
+                    cod=voos['cod'],
                     aeromocas=voos['aeromocas'],
                     aeronave=voos['aeronave'],
                     assentos=voos['assentos'],
@@ -59,7 +60,6 @@ class DAOVoo(DAO):
             result = self.__collection.update_one(
                 {"cod": voo.cod},
                 {"$set": {
-                    
                     "aeromocas": voo.aeromocas,
                     "aeronave": voo.aeronave,
                     "assentos": voo.assentos,
