@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 from PySimpleGUI import popup
 
@@ -41,9 +42,11 @@ class TelaFuncionarios:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Retornar':
+            if evento == 'Retornar':
                 self.retornar_tela_admin()
                 break
+            elif evento == Sg.WINDOW_CLOSED:
+                sys.exit()
             elif evento == 'Adicionar Funcionário':
                 self.adicionar_funcionario()
             elif evento.startswith('alterar_'):

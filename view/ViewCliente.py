@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 
 class TelaCliente:
@@ -28,9 +29,11 @@ class TelaCliente:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Sair':
+            if evento == 'Sair':
                 self.voltar_para_login()
                 break
+            elif evento == Sg.WINDOW_CLOSED:
+                sys.exit()
             elif evento == 'Nova Reserva':
                 self.nova_reserva()
             elif evento == 'Minhas Reservas':

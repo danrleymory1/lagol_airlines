@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 
 class TelaCadastroCliente:
@@ -25,8 +26,10 @@ class TelaCadastroCliente:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Cancelar':
+            if evento == 'Cancelar':
                 break
+            elif evento == Sg.WINDOW_CLOSED:
+                sys.exit()
             elif evento == 'Cadastrar':
                 self.cadastrar(valores)
 

@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 from view.ViewCadastroCliente import TelaCadastroCliente
 
@@ -27,6 +28,7 @@ class TelaLogin:
             evento, valores = self.janela.read()
 
             if evento == Sg.WINDOW_CLOSED:
+                sys.exit()
                 break
             elif evento == 'Login':
                 self.login(valores['cpf'], valores['senha'])

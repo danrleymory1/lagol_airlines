@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 
 class TelaAlterarCliente:
@@ -22,9 +23,11 @@ class TelaAlterarCliente:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Cancelar':
+            if evento == 'Cancelar':
                 self.retornar_cliente()
                 break
+            elif evento == Sg.WINDOW_CLOSED:
+                sys.exit()
             elif evento == 'Salvar Alterações':
                 self.alterar_cliente(valores)
             elif evento == 'Deletar Cliente':

@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 
 class TelaLoginAdmin:
@@ -22,9 +23,11 @@ class TelaLoginAdmin:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Voltar':
+            if evento == 'Voltar':
                 self.voltar_para_login_passageiro()
                 break
+            elif evento == Sg.WINDOW_CLOSED:
+                sys.exit()
             elif evento == 'Login':
                 self.login(valores)
 
