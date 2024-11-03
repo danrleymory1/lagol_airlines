@@ -1,3 +1,4 @@
+import sys
 import PySimpleGUI as Sg
 from PySimpleGUI import popup
 
@@ -41,9 +42,11 @@ class TelaVerVoos:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Retornar':
+            if evento == 'Retornar':
                 self.retornar_tela_cliente()
                 break
+            elif evento == Sg.WINDOW_CLOSED:
+                sys.exit()
             elif evento.startswith('escolher_'):
                 voo_cod = evento.split('_')[1]
                 self.abrir_tela_fazer_reserva()

@@ -40,7 +40,7 @@ class TelaFazerReserva:
                 self.retornar_tela_voos()
                 break
 
-            if event == Sg.WINDOW_CLOSED:
+            elif event == Sg.WINDOW_CLOSED:
                 sys.exit()
             
             # Habilita/desabilita os campos de texto dependendo da seleção dos radio buttons
