@@ -1,11 +1,10 @@
 from model import Aeronaves
 import datetime
-
 from model.Pessoas import Aeromocas, Pilotos
 
 class Voos:
 
-    def __init__(self, cod:str, aeronave:Aeronave, assentos:dict, origem:str, destino:str, data:datetime, piloto:Piloto, aeromoca:Aeromoca):
+    def __init__(self, cod:str, aeronave:Aeronaves, assentos:dict, origem:str, destino:str, data:datetime, piloto:Pilotos, aeromoca:Aeromocas):
         self.__cod = cod
         self.__aeronave = aeronave
         self.__assentos = assentos
@@ -30,7 +29,7 @@ class Voos:
     
     @aeronave.setter
     def aeronave(self, new_aeronave):
-        if isinstance(new_aeronave, Aeronave):
+        if isinstance(new_aeronave, Aeronaves):
             self.__aeronave = new_aeronave
 
     @property
@@ -75,7 +74,7 @@ class Voos:
     
     @piloto.setter
     def piloto(self, new_piloto):
-        if isinstance(new_piloto, Piloto):
+        if isinstance(new_piloto, Pilotos):
             self.__piloto = new_piloto
 
     @property
@@ -84,5 +83,5 @@ class Voos:
     
     @aeromoca.setter
     def aeromoca(self, new_aeromoca):
-        if isinstance(new_aeromoca, Aeromoca):
+        if isinstance(new_aeromoca, Aeromocas):
             self.__aeromoca = new_aeromoca

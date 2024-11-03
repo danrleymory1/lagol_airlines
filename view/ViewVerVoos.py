@@ -1,62 +1,66 @@
 import PySimpleGUI as Sg
 from PySimpleGUI import popup
+from view import ViewAlterarVoo, ViewAdicionarVoo, ViewExcluirVoo  # Importa a nova ViewExcluirVoo
 
-
-class TelaVerVoos:
+class ViewVerVoos:
     def __init__(self, controlador):
         self.controlador = controlador
         self.janela = None
         self.criar_janela()
 
     def criar_janela(self):
-        # Cabeçalho e layout inicial
         layout = [
-            [Sg.Button('Retornar', size=(10, 1)), Sg.Push()],
-            [Sg.Push(), Sg.Text('Ver voos', font=("Arial", 14)), Sg.Push()],
-            [Sg.Column([[Sg.Text(f"{'Origem':<20} {'Destino':<20} {'Data':<15}")]])],  # Cabeçalho da lista
+            [Sg.Button('Adicionar Voo', size=(12, 1)), Sg.Button('Retornar', size=(10, 1))],
+            [Sg.Text('Ver Voos', font=("Arial", 14))],
+            [Sg.Column([[Sg.Text(f"{'Origem':<20} {'Destino':<20} {'Data':<15}")]])],
             [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(500, 300))],
-            
         ]
-
-        # Cria a janela
-        self.janela = Sg.Window('Ver voos', layout, size=(600, 500))
+        self.janela = Sg.Window('Ver Voos', layout, size=(600, 500))
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
+        voos_layout = []
         if voos:
-            voos_layout = []
             for voo in voos:
                 voos_layout.append([
-                    Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data:<15}"),
-                    Sg.Push(),
-                    Sg.Button('Alterar', key=f'alterar_{voo.cpf}', size=(10, 1)),
-                    Sg.Button('Deletar', key=f'deletar_{voo.cpf}', size=(10, 1)) 
+                    Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data.strftime('%d/%m/%Y')}"),
+                    Sg.Button('Alterar', key=f'alterar_{voo.cod}', size=(8, 1)),
+                    Sg.Button('Deletar', key=f'deletar_{voo.cod}', size=(8, 1))
                 ])
-            return voos_layout
         else:
-            Sg.popup("Informação", "Nenhum voo cadastrado.")
-            return [[Sg.Text("Nenhum voo cadastrado.")]]
+            voos_layout.append([Sg.Text("Nenhum voo cadastrado.")])
+        return voos_layout
 
     def abrir(self):
         while True:
             evento, valores = self.janela.read()
 
             if evento == Sg.WINDOW_CLOSED or evento == 'Retornar':
-                self.retornar_tela_cliente()
+                self.janela.close()
                 break
-            elif evento == 'Escolher Voo':
-                self.escolher_voo()
+            elif evento == 'Adicionar Voo':
+                self.janela.hide()
+                ViewAdicionarVoo(self.controlador).abrir()
+                self.janela.un_hide()
+                self.atualizar_voos()
+            elif evento.startswith('alterar_'):
+                cod_voo = evento.split('_')[1]
+                voo = self.controlador.controlador_voo.buscar_voo_por_codigo(cod_voo)
+                if voo:
+                    self.janela.hide()
+                    ViewAlterarVoo(self.controlador, voo).abrir()
+                    self.janela.un_hide()
+                    self.atualizar_voos()
+            elif evento.startswith('deletar_'):
+                cod_voo = evento.split('_')[1]
+                self.janela.hide()
+                view_excluir = ViewExcluirVoo(self.controlador, cod_voo)
+                if view_excluir.abrir():  # Abre a view e verifica se o voo foi excluído
+                    self.atualizar_voos()  # Atualiza a lista de voos se a exclusão foi bem-sucedida
+                self.janela.un_hide()
 
-        self.janela.close()
-
-    def escolher_voo(self):
-        self.janela.close()
-
-        from view.ViewFazerReserva import TelaFazerReserva
-        TelaFazerReserva(self.controlador).abrir()
-
-
-    def retornar_tela_cliente(self):
-        self.janela.close()
-        from view.ViewCliente import TelaCliente
-        TelaCliente(self.controlador).abrir()
+    def atualizar_voos(self):
+        # Recarrega a janela para exibir voos atualizados
+        for element in self.janela.element_list():
+            element.update(visible=False)
+        self.janela.extend_layout(self.janela, [[Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(500, 300))]])
