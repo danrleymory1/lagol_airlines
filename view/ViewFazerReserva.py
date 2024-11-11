@@ -71,7 +71,7 @@ class TelaFazerReserva:
 
     def retornar_tela_voos(self):
         self.janela.close()
-        from view.ViewVerVoos import TelaVerVoos
+        from view.ViewVerVoosAdm import TelaVerVoos
         TelaVerVoos(self.controlador).abrir()
     
     def ir_pra_ticket(self):
