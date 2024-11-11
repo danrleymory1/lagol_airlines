@@ -50,7 +50,7 @@ class TelaCliente:
 
     def nova_reserva(self):
         self.janela.close()
-        from view.ViewVerVoos import TelaVerVoos
+        from view.ViewVerVoosAdm import TelaVerVoos
         TelaVerVoos(self.controlador).abrir()
         
 
