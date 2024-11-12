@@ -37,9 +37,10 @@ class TelaVerVoosAdm:
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == 'Retornar':
-                self.retornar_tela_cliente()
-                break
+            if evento == Sg.WINDOW_CLOSED:
+                sys.exit()
+            elif evento == 'Retornar':
+                self.retornar_tela_adm()
             elif evento == 'Adicionar Voo':
                 self.janela.hide()
                 ViewAdicionarVoo(self.controlador).abrir()
@@ -55,21 +56,23 @@ class TelaVerVoosAdm:
                     self.atualizar_voos()
             elif evento.startswith('deletar_'):
                 cod_voo = evento.split('_')[1]
-                self.janela.hide()
-                view_excluir = ViewExcluirVoo(self.controlador, cod_voo)
-                if view_excluir.abrir():  # Abre a view e verifica se o voo foi excluído
-                    self.atualizar_voos()  # Atualiza a lista de voos se a exclusão foi bem-sucedida
-                self.janela.un_hide()
-
-        self.janela.close()
+                res = Sg.popup("Tem certeza que deseja excluir este voo?", title="Excluir Voo",  custom_text=("Confirmar", "Cancelar"))
+                if res == "Confirmar":
+                    try:
+                        self.controlador.controlador_voo.deletar_voo(cod_voo)
+                    except Exception as e:
+                        popup(f"Erro ao excluir voo: {e}")
+                    Sg.popup("Voo excluído com sucesso.")
+                    self.atualizar_voos()
+                else:
+                    Sg.popup("Operação cancelada.")
 
     def atualizar_voos(self):
-        # Recarrega a janela para exibir voos atualizados
-        for element in self.janela.element_list():
-            element.update(visible=False)
-        self.janela.extend_layout(self.janela, [[Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(500, 300))]])
-
-    def retornar_tela_cliente(self):
         self.janela.close()
-        from view.ViewCliente import TelaCliente
-        TelaCliente(self.controlador).abrir()
+        self.criar_janela()
+        self.carregar_voos()
+
+    def retornar_tela_adm(self):
+        self.janela.close()
+        from view.ViewAdmin import TelaAdmin
+        TelaAdmin(self.controlador).abrir()
