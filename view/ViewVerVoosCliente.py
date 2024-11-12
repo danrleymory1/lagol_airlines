@@ -30,8 +30,7 @@ class TelaVerVoos:
                 voos_layout.append([
                     Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data:<15} {voo.horario_decolagem:<8}"),
                     Sg.Push(),
-                    Sg.Button('Escolher', key=f'escolher_{voo.cod}', size=(10, 1)),
-                    #Sg.Button('Deletar', key=f'deletar_{voo.cod}', size=(10, 1)) 
+                    Sg.Button('Escolher', key=f'escolher_{voo.cod}', size=(10, 1))
                 ])
             return voos_layout
         else:

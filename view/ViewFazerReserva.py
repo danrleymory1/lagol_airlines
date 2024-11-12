@@ -61,11 +61,17 @@ class TelaFazerReserva:
                 self.janela["nascimento"].update(disabled=False)
             
             if event == "Reservar":
-            
-                if values["usuario_nao"] and (not values["nome"] or not values["cpf"] or not values["nascimento"]):
-                    Sg.popup("Erro", "Preencha os dados do passageiro.")
+
+                if values["usuario_nao"]:
+                    if not values["nome"]:
+                        Sg.popup("Erro, preencha o campo nome.")
+                    elif len(values["nome"]) < 3:
+                        Sg.popup("Erro, o nome deve ter no mínimo 3 caracteres.")
+                    elif not values["cpf"]:
+                        Sg.popup("Erro, preencha o campo cpf.")
+                    elif not values["nascimento"]:
+                        Sg.popup("Erro, preencha o campo nascimento.")
                 else:
-                    
                     Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
                     self.ir_para_ticket()
 
