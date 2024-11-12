@@ -1,17 +1,19 @@
 from model import Voos
-from model.Pessoas import Clientes
+from model.Pessoas import Clientes, Passageiros
 
 
 class Reservas:
 
-    def __init__(self, cod:str, numero_reserva:str, passageiro:Passageiro, voo:Voo, assento:str, quant_bagagem:int):
+    def __init__(self, cod:str, cliente:Clientes, passageiro:Passageiros, voo:Voos, assento:str):
 
         self.__cod = cod
-        self.__numero_reserva = numero_reserva
+        self.__cliente = cliente
         self.__passageiro = passageiro
         self.__voo = voo
         self.__assento = assento
-        self.__quant_bagagem = quant_bagagem
+        self.__quant_bagagem = 1
+        self.__pagamento_extra_assento = False
+        self.__compareceu = False
         
     @property
     def cod(self):
@@ -23,22 +25,22 @@ class Reservas:
             self.__cod = new_cod
 
     @property
-    def numero_reserva(self):
-        return self.__numero_reserva
-    
-    @numero_reserva.setter
-    def numero_reserva(self, new_numero_reserva):
-        if isinstance(new_numero_reserva, str):
-            self.__numero_reserva = new_numero_reserva
-
-    @property
     def passageiro(self):
         return self.__passageiro
     
     @passageiro.setter
     def passageiro(self, new_passageiro):
-        if isinstance(new_passageiro, Passageiro):
+        if isinstance(new_passageiro, Passageiros):
             self.__passageiro = new_passageiro
+
+    @property
+    def cliente(self):
+        return self.__cliente
+    
+    @cliente.setter
+    def cliente(self, new_cliente):
+        if isinstance(new_cliente, Clientes):
+            self.__cliente = new_cliente
 
     @property
     def voo(self):
@@ -46,7 +48,7 @@ class Reservas:
     
     @voo.setter
     def voo(self, new_voo):
-        if isinstance(new_voo, Voo):
+        if isinstance(new_voo, Voos):
             self.__voo = new_voo
         
     @property
@@ -66,3 +68,21 @@ class Reservas:
     def quant_bagagem(self, new_quant_bagagem):
         if isinstance(new_quant_bagagem, int):
             self.__quant_bagagem = new_quant_bagagem
+
+    @property
+    def pagamento_extra_assento(self):
+        return self.__pagamento_extra_assento
+    
+    @pagamento_extra_assento.setter
+    def pagamento_extra_assento(self, new_pagamento_extra_assento):
+        if isinstance(new_pagamento_extra_assento, bool):
+            self.__pagamento_extra_assento = new_pagamento_extra_assento
+    
+    @property
+    def compareceu(self):
+        return self.__compareceu
+    
+    @compareceu.setter
+    def compareceu(self, new_compareceu):
+        if isinstance(new_compareceu, bool):
+            self.__compareceu = new_compareceu

@@ -3,7 +3,7 @@ import PySimpleGUI as Sg
 from PySimpleGUI import popup
 from view import ViewAlterarVoo, ViewAdicionarVoo, ViewExcluirVoo  # Importa a nova ViewExcluirVoo
 
-class TelaVerVoos:
+class TelaVerVoosAdm:
     def __init__(self, controlador):
         self.controlador = controlador
         self.janela = None

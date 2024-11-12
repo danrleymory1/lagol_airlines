@@ -1,6 +1,7 @@
 import sys
 import PySimpleGUI as Sg
 
+from model.Pessoas import Passageiros
 from view.ViewVerTicket import TelaVerTicket
 
 class TelaFazerReserva:
@@ -72,8 +73,12 @@ class TelaFazerReserva:
                     elif not values["nascimento"]:
                         Sg.popup("Erro, preencha o campo nascimento.")
                 else:
-                    Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
-                    self.ir_para_ticket()
+                    resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=Passageiros(nome=values["nome"], cpf=values["cpf"], data_nascimento=values["nascimento"]), cliente=self.controlador.controlador_cliente.cliente_logado , voo=self.__voo.cod)
+                    if resposta[0]:
+                        Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
+                        self.ir_para_ticket()
+                    else:
+                        Sg.popup("Erro", resposta[1])
 
     def retornar_tela_voos(self):
         self.janela.close()
