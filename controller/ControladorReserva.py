@@ -19,8 +19,10 @@ class ControladorReserva:
 
         reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=assento)
 
-        if self.__dao.adicionar(reserva):
-            return True, "Reserva realizada com sucesso!"
+        cod_reserva = self.__dao.adicionar(reserva)
+
+        if cod_reserva:
+            return cod_reserva, "Reserva realizada com sucesso!"
         else:
             return False, "Erro ao cadastrar a reserva. Tente novamente."
         

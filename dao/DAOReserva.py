@@ -8,12 +8,13 @@ class DAOReserva(DAO):
         self.__collection = self.db['reservas']
 
     def adicionar(self, reserva):
+        print(reserva)
+        print(reserva.to_dict())
         try:
-            reserva.cod = self.get_next_cod("reserva_cod")
             result = self.__collection.insert_one(reserva.to_dict())
             return result.inserted_id is not None
         except Exception as e:
-            print(f"Erro ao adicionar o reserva: {e}")
+            print(f"Erro ao adicionar a reserva: {e}")
             return False
 
     def buscar_por_cod(self, cod):

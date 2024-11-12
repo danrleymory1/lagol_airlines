@@ -86,3 +86,16 @@ class Reservas:
     def compareceu(self, new_compareceu):
         if isinstance(new_compareceu, bool):
             self.__compareceu = new_compareceu
+
+    def to_dict(self):
+        reserva_dict = {
+            "cod": self.__cod,
+            "passageiro": self.__passageiro,
+            "cliente": self.__cliente,
+            "voo": self.__voo,
+            "assento": self.__assento,
+            "quant_bagagem": self.__quant_bagagem,
+            "pagamento_extra_assento": self.__pagamento_extra_assento,
+            "compareceu": self.__compareceu
+        }
+        return reserva_dict

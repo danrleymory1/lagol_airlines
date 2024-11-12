@@ -34,7 +34,7 @@ class ControladorVoo:
 
     def buscar_todos_voos(self):
         try:
-            return self.dao_voos.buscar_todos()
+            return self.dao_voos.buscar_voos()
         except Exception as e:
             print(f"Erro ao buscar todos os voos: {e}")
             return []

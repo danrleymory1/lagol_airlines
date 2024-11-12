@@ -25,12 +25,9 @@ class DAOVoo(DAO):
             return self.dict_to_voo(voo_dict)
         return None
 
-    def buscar_voos(self, filtros=None):
-        """Busca voos com base em filtros especificados ou todos os voos se filtros for None."""
-        if filtros is None:
-            voos_dict = self.__collection.find()
-        else:
-            voos_dict = self.__collection.find(filtros)
+    def buscar_voos(self):
+        
+        voos_dict = self.__collection.find()
         
         voos_list = []
         for voo_dict in voos_dict:

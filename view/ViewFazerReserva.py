@@ -9,8 +9,9 @@ class TelaFazerReserva:
         self.controlador = controlador
         self.janela = None
         self.__voo_cod = voo_cod
-        self.__voo = self.controlador.controlador_voo.buscar_por_cod(self.__voo_cod)
+        self.__voo = self.controlador.controlador_voo.buscar_voo_por_codigo(self.__voo_cod)
         self.criar_janela()
+        self.usuario_passageiro = True
         
 
 
@@ -53,17 +54,28 @@ class TelaFazerReserva:
             
             # Habilita/desabilita os campos de texto dependendo da seleção dos radio buttons
             if event == "usuario_sim":
+                self.usuario_passageiro = True
                 self.janela["nome"].update(disabled=True)
                 self.janela["cpf"].update(disabled=True)
                 self.janela["nascimento"].update(disabled=True)
             elif event == "usuario_nao":
+                self.usuario_passageiro = False
                 self.janela["nome"].update(disabled=False)
                 self.janela["cpf"].update(disabled=False)
                 self.janela["nascimento"].update(disabled=False)
             
             if event == "Reservar":
 
-                if values["usuario_nao"]:
+                if self.usuario_passageiro:
+                    print(self.controlador.controlador_cliente.cliente_logado) 
+                    print(self.__voo.cod)
+                    resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado.cod , voo_cod=self.__voo.cod)
+                    if resposta[0]:
+                        Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
+                        self.ir_para_ticket(resposta[1])
+                    else:
+                        Sg.popup("Erro", resposta[1])
+                else:
                     if not values["nome"]:
                         Sg.popup("Erro, preencha o campo nome.")
                     elif len(values["nome"]) < 3:
@@ -72,21 +84,23 @@ class TelaFazerReserva:
                         Sg.popup("Erro, preencha o campo cpf.")
                     elif not values["nascimento"]:
                         Sg.popup("Erro, preencha o campo nascimento.")
-                else:
-                    resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=Passageiros(nome=values["nome"], cpf=values["cpf"], data_nascimento=values["nascimento"]), cliente=self.controlador.controlador_cliente.cliente_logado , voo=self.__voo.cod)
-                    if resposta[0]:
-                        Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
-                        self.ir_para_ticket()
                     else:
-                        Sg.popup("Erro", resposta[1])
+                        passageiro = Passageiros(nome=values["nome"], cpf=values["cpf"], nascimento=values["nascimento"])
+
+                        resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado.cod, voo_cod=self.__voo.cod)
+                        if resposta[0]:
+                            Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
+                            self.ir_para_ticket(resposta[1])
+                        else:
+                            Sg.popup("Erro", resposta[1])
 
     def retornar_tela_voos(self):
         self.janela.close()
         from view.ViewVerVoosAdm import TelaVerVoos
         TelaVerVoos(self.controlador).abrir()
     
-    def ir_pra_ticket(self):
+    def ir_pra_ticket(self, cod_reserva):
         self.janela.close()
-        TelaVerTicket(self.controlador).abrir()
+        TelaVerTicket(self.controlador, cod_reserva).abrir()
 
 
