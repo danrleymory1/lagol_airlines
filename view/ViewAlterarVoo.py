@@ -23,7 +23,7 @@ class ViewAlterarVoo:
             nova_data = datetime.strptime(valores['data'], '%d/%m/%Y')
             return True, "Dados válidos", nova_data
         except ValueError:
-            return False, "Informação inválida, por favor, tente novamente."
+            return False, "Informação alterada inválida, por favor, tente novamente."
     
     def abrir(self):
         while True:
@@ -44,9 +44,9 @@ class ViewAlterarVoo:
 
                 # Exibir a mensagem de acordo com o resultado da operação
                 if sucesso:
-                    Sg.popup("Voo alterado com sucesso")
+                    Sg.popup("Informação do voo alterado com sucesso!")
                     break
                 else:
-                    Sg.popup("Informação inválida, por favor, tente novamente")
+                    Sg.popup("Informação alterada inválida, por favor, tente novamente")
 
         self.janela.close()
