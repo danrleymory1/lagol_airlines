@@ -1,7 +1,9 @@
 import sys
 import PySimpleGUI as Sg
 from PySimpleGUI import popup
-from view import ViewAlterarVoo, ViewAdicionarVoo, ViewExcluirVoo  # Importa a nova ViewExcluirVoo
+from view.ViewAdicionarVoo import ViewAdicionarVoo
+from view.ViewAlterarVoo import ViewAlterarVoo
+
 
 class TelaVerVoosAdm:
     def __init__(self, controlador):
@@ -65,7 +67,7 @@ class TelaVerVoosAdm:
                     Sg.popup("Voo excluído com sucesso.")
                     self.atualizar_voos()
                 else:
-                    Sg.popup("Operação cancelada.")
+                    Sg.popup("Seu voo NÃO foi excluído!")
 
     def atualizar_voos(self):
         self.janela.close()

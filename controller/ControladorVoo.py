@@ -1,32 +1,86 @@
 from dao.DAOVoo import DAOVoo
 from model.Voos import Voos
 from model.Aeronaves import Aeronaves
-from model.Pessoas import Pilotos, Aeromocas
+from model.Pessoas.Pilotos import Pilotos
+from model.Pessoas.Aeromocas import Aeromocas
+from datetime import datetime
 
 class ControladorVoo:
     def __init__(self):
         self.dao_voos = DAOVoo()
 
-    def cadastrar_voos(self, origem, destino, aeromocas, pilotos, data, horario, aeronave, assentos):
-        # Verificações detalhadas de parâmetros
-        if not origem or not isinstance(origem, str):
-            return False, "Erro: Origem inválida."
-        if not destino or not isinstance(destino, str):
-            return False, "Erro: Destino inválido."
-        if not aeromocas or not isinstance(aeromocas, list):
-            return False, "Erro: Aeromoças deve ser uma lista."
-        if not pilotos or not isinstance(pilotos, list):
-            return False, "Erro: Pilotos deve ser uma lista."
-        if not data:
-            return False, "Erro: Data inválida."
-        if not horario:
-            return False, "Erro: Horário inválido."
-        if not aeronave or not isinstance(aeronave, Aeronaves):
-            return False, "Erro: Aeronave inválida."
-        if not assentos:
-            return False, "Erro: Assentos inválidos."
+    def gerar_codigo_voo(self):
+        # Gera um código de voo automaticamente, incrementando a partir do último código.
+        voos = self.dao_voos.buscar_voos()
+        if voos:
+            return max([voo.codigo for voo in voos]) + 1  # Incrementa o código do voo
+        else:
+            return 1  # Caso não haja voos registrados, começa do código 1
 
-        voo = Voos(origem=origem, destino=destino, aeromoca=aeromocas, piloto=pilotos, data=data, horario=horario, aeronave=aeronave, assentos=assentos)
+    def cadastrar_voo(self, aviao, origem, destino, data, horario, piloto, copiloto, aeromoca1, aeromoca2):
+        # Verificação do Avião
+        if not aviao or not isinstance(aviao, Aeronaves):
+            return False, "Entrada em 'avião' inválida, tente novamente."
+
+        # Verificação de Origem
+        if not origem or not isinstance(origem, str) or len(origem) < 3:
+            return False, "Entrada em 'origem' inválida, tente novamente."
+
+        # Verificação de Destino
+        if not destino or not isinstance(destino, str) or len(destino) < 3 or destino == origem:
+            return False, "Entrada em 'destino' inválida, tente novamente."
+
+        # Verificação de Data (deve ser futura e no formato dd/mm/aaaa)
+        try:
+            data = datetime.strptime(data, "%d/%m/%Y")
+            if data <= datetime.now():
+                return False, "Entrada em 'data' inválida, tente novamente."
+        except ValueError:
+            return False, "Entrada em 'data' inválida, tente novamente."
+
+        # Verificação do Piloto
+        if not piloto or not isinstance(piloto, Pilotos):
+            return False, "Entrada em 'piloto' inválida, tente novamente."
+
+        # Verificação do Copiloto
+        if not copiloto or not isinstance(copiloto, Pilotos):
+            return False, "Entrada em 'copiloto' inválida, tente novamente."
+
+        # Verificação da Aeromoça 1
+        if not aeromoca1 or not isinstance(aeromoca1, Aeromocas):
+            return False, "Entrada em 'aeromoça 1' inválida, tente novamente."
+
+        # Verificação da Aeromoça 2
+        if not aeromoca2 or not isinstance(aeromoca2, Aeromocas):
+            return False, "Entrada em 'aeromoça 2' inválida, tente novamente."
+
+        # Verificação de Horário (deve estar no formato hh:mm e ser um horário válido)
+        try:
+            horario = datetime.strptime(horario, "%H:%M").time()
+            if horario.hour < 0 or horario.hour >= 24:
+                return False, "Entrada em 'hora de decolagem' inválida, tente novamente."
+        except ValueError:
+            return False, "Entrada em 'hora de decolagem' inválida, tente novamente."
+
+        # Gerar o código automaticamente
+        codigo_voo = self.gerar_codigo_voo()
+
+        # Gerar o número de assentos com base no avião selecionado
+        numero_assentos = aviao.obter_numero_assentos()
+
+        # Se todas as verificações passarem, cria-se o voo
+        voo = Voos(
+            codigo=codigo_voo,  # Código gerado automaticamente
+            origem=origem,
+            destino=destino,
+            aeromoca=[aeromoca1, aeromoca2],
+            piloto=[piloto, copiloto],
+            data=data,
+            horario=horario,
+            aeronave=aviao,
+            assentos=numero_assentos  # Número de assentos gerado automaticamente
+        )
+        
         if self.dao_voos.adicionar(voo):
             return True, "Cadastro do voo realizado com sucesso!"
         else:
