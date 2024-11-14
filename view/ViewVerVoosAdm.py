@@ -73,7 +73,6 @@ class ViewVerVoosAdm:
     def atualizar_voos(self):
         self.janela.close()
         self.criar_janela()
-        self.carregar_voos()
 
     def retornar_tela_adm(self):
         self.janela.close()

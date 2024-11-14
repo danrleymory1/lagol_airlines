@@ -65,9 +65,6 @@ class ControladorVoo:
         # Gerar o código automaticamente
         codigo_voo = self.gerar_codigo_voo()
 
-        # Gerar o número de assentos com base no avião selecionado
-        numero_assentos = aviao.obter_numero_assentos()
-
         # Se todas as verificações passarem, cria-se o voo
         voo = Voos(
             codigo=codigo_voo,  # Código gerado automaticamente
@@ -78,7 +75,6 @@ class ControladorVoo:
             data=data,
             horario=horario,
             aeronave=aviao,
-            assentos=numero_assentos  # Número de assentos gerado automaticamente
         )
         
         if self.dao_voos.adicionar(voo):
@@ -101,6 +97,7 @@ class ControladorVoo:
             return None
 
     def alterar_voo(self, cod, nova_aeronave=None, novos_assentos=None, nova_origem=None, novo_destino=None, nova_data=None, novo_piloto=None, nova_aeromoca=None):
+        #RETIRAR ESSA BUSCA POR VOO
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
             return False, "Voo não encontrado."

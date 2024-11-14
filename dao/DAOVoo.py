@@ -12,7 +12,6 @@ class DAOVoo(DAO):
 
     def adicionar(self, voo: Voos):
         try:
-            voo.cod = self.get_next_cod("voo_cod")  # Gera o próximo código de voo
             result = self.__collection.insert_one(self.voo_to_dict(voo))
             return result.inserted_id is not None
         except Exception as e:

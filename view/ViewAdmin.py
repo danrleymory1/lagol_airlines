@@ -56,8 +56,8 @@ class TelaAdmin:
 
     def gerenciar_voos(self):
         self.janela.close()
-        from view.ViewVerVoosAdm import TelaVerVoosAdm
-        TelaVerVoosAdm(self.controlador).abrir()
+        from view.ViewVerVoosAdm import ViewVerVoosAdm
+        ViewVerVoosAdm(self.controlador).abrir()
 
     def ver_tickets_emitidos(self):
         # Implementação futura
