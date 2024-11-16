@@ -3,7 +3,7 @@ import PySimpleGUI as Sg
 from PySimpleGUI import popup
 
 
-class ViewVerVoosCliente:
+class TelaVerVoosCliente:
     def __init__(self, controlador):
         self.controlador = controlador
         self.janela = None

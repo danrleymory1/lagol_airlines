@@ -9,7 +9,7 @@ class TelaFazerReserva:
         self.controlador = controlador
         self.janela = None
         self.__voo_cod = voo_cod
-        self.__voo = self.controlador.controlador_voo.buscar_voo_por_codigo(self.__voo_cod)
+        self.__voo = self.controlador.controlador_voo.buscar_voo_por_codigo(int(self.__voo_cod))
         self.criar_janela()
         self.usuario_passageiro = True
         
@@ -67,12 +67,11 @@ class TelaFazerReserva:
             if event == "Reservar":
 
                 if self.usuario_passageiro:
-                    print(self.controlador.controlador_cliente.cliente_logado) 
-                    print(self.__voo.cod)
+                    
                     resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado.cod , voo_cod=self.__voo.cod)
                     if resposta[0]:
                         Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
-                        self.ir_para_ticket(resposta[1])
+                        self.ir_pra_ticket(resposta[0])
                     else:
                         Sg.popup("Erro", resposta[1])
                 else:
@@ -90,7 +89,7 @@ class TelaFazerReserva:
                         resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado.cod, voo_cod=self.__voo.cod)
                         if resposta[0]:
                             Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
-                            self.ir_para_ticket(resposta[1])
+                            self.ir_pra_ticket(resposta[1])
                         else:
                             Sg.popup("Erro", resposta[1])
 

@@ -10,8 +10,8 @@ class ControladorReserva:
 
     def cadastrar_reserva(self, passageiro, cliente, voo_cod):
 
-        while(True):
-            cod = random.choices(string.digits+string.ascii_uppercase, k=5)
+        while True:
+            cod = ''.join(random.choices(string.digits + string.ascii_uppercase, k=5))  # Junta os caracteres em uma string
             if self.validar_codigo(cod):
                 break
         
@@ -19,10 +19,8 @@ class ControladorReserva:
 
         reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=assento)
 
-        cod_reserva = self.__dao.adicionar(reserva)
-
-        if cod_reserva:
-            return cod_reserva, "Reserva realizada com sucesso!"
+        if self.__dao.adicionar(reserva):
+            return cod, "Reserva realizada com sucesso!"
         else:
             return False, "Erro ao cadastrar a reserva. Tente novamente."
         
@@ -33,6 +31,9 @@ class ControladorReserva:
 
     def buscar_reserva_por_cod(self, cod):
         return self.__dao.buscar_por_cod(cod)
+    
+    def buscar_reservas_por_cliente(self, cpf_cliente):
+        return self.__dao.buscar_reservas({"cliente": cpf_cliente})
 
     def deletar_reserva(self, cod):
         sucesso = self.__dao.deletar(cod)

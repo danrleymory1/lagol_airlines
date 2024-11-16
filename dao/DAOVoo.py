@@ -18,7 +18,8 @@ class DAOVoo(DAO):
             print(f"Erro ao adicionar voo: {e}")
             return False
 
-    def buscar_por_codigo(self, cod: str):
+    def buscar_por_codigo(self, cod):
+        
         voo_dict = self.__collection.find_one({"cod": cod})
         if voo_dict:
             return self.dict_to_voo(voo_dict)
