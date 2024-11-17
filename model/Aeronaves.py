@@ -3,24 +3,26 @@ from model.ModeloAeronaves import ModeloAeronave
 
 class Aeronaves():
 
-    def __init__(self, modelo:ModeloAeronave, voos:list):
+    def __init__(self, modelo:ModeloAeronave):
         self.__modelo = modelo
-        self.__voos = voos
+        self.__cod = None
         
     @property
     def modelo(self):
         return self.__modelo
 
     @modelo.setter
-    def modelo(self, nova_data):
-        if isinstance(nova_data, ModeloAeronave):
-            self.__modelo = nova_data
-
+    def modelo(self, novo_modelo):
+        if isinstance(novo_modelo, ModeloAeronave):
+            self.__modelo = novo_modelo
+    
     @property
-    def voos(self):
-        return self.__voos
+    def codigo(self):
+        return self.__cod
 
-    @voos.setter
-    def voos(self, nova_data):
-        if isinstance(nova_data, list):
-            self.__voos = nova_data
+    @codigo.setter
+    def codigo(self, novo_cod):
+        if isinstance(novo_cod, int):
+            self.__codigo = novo_cod
+
+
