@@ -91,7 +91,7 @@ class Reservas:
         reserva_dict = {
             "cod": self.__cod,
             "passageiro": self.__passageiro,
-            "cliente": self.__cliente,
+            "cliente": self.__cliente.cpf,
             "voo": self.__voo,
             "assento": self.__assento,
             "quant_bagagem": self.__quant_bagagem,

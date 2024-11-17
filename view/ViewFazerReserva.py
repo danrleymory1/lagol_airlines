@@ -24,8 +24,8 @@ class TelaFazerReserva:
 
         dados_passageiro_layout = [
             [Sg.Text("O passageiro é o usuario?")],
-            [Sg.Radio("Sim", "passageiro_usuario", key="usuario_sim", enable_events=True), 
-            Sg.Radio("Não", "passageiro_usuario", key="usuario_nao", enable_events=True)],
+            [Sg.Radio("Sim", "passageiro_usuario", key="usuario_sim", enable_events=True, default=True), 
+            Sg.Radio("Não", "passageiro_usuario", key="usuario_nao", enable_events=True, default=False)],
             [Sg.Text("Caso não:")],
             [Sg.Text("Nome                      CPF                      Data de nascimento")],
             [Sg.InputText(key="nome", size=(15, 1), tooltip="Nome", disabled=True,), 
@@ -67,8 +67,10 @@ class TelaFazerReserva:
             if event == "Reservar":
 
                 if self.usuario_passageiro:
+
+                    print(self.controlador.controlador_cliente.cliente_logado)
                     
-                    resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado.cod , voo_cod=self.__voo.cod)
+                    resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado, voo_cod=self.__voo.cod)
                     if resposta[0]:
                         Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
                         self.ir_pra_ticket(resposta[0])
@@ -95,8 +97,8 @@ class TelaFazerReserva:
 
     def retornar_tela_voos(self):
         self.janela.close()
-        from view.ViewVerVoosAdm import TelaVerVoos
-        TelaVerVoos(self.controlador).abrir()
+        from view.ViewVerVoosCliente import TelaVerVoosCliente
+        TelaVerVoosCliente(self.controlador).abrir()
     
     def ir_pra_ticket(self, cod_reserva):
         self.janela.close()

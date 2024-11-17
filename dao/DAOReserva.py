@@ -8,11 +8,13 @@ class DAOReserva(DAO):
         self.__collection = self.db['reservas']
 
     def adicionar(self, reserva):
+        print("AAAAAAAAAAAAAAAAAAAAAA")
+        print(reserva.cliente)
+        print(reserva.to_dict())
        
         try:
             result = self.__collection.insert_one(reserva.to_dict())
-            print("BBBBBBB")
-            print(result.inserted_id)
+           
             return result.inserted_id is not None
         except Exception as e:
             print(f"Erro ao adicionar a reserva: {e}")
@@ -39,17 +41,13 @@ class DAOReserva(DAO):
         reservas_list = []
 
         if reservas_dict:
-            for reservas in reservas_dict:
+            for reserva in reservas_dict:
                 reserva = Reservas(
-                    cod=reservas['cod'],
-                    aeromocas=reservas['aeromocas'],
-                    aeronave=reservas['aeronave'],
-                    assentos=reservas['assentos'],
-                    data=reservas['data'],
-                    destino=reservas['destino'],
-                    horario_decolagem=reservas['horario_decolagem'],
-                    origem=reservas['origem'],
-                    pilotos=reservas['pilotos']
+                    cod=reserva['cod'],
+                    passageiro=reserva['passageiro'],
+                    cliente=reserva['cliente'],
+                    voo=reserva['voo'],
+                    assento=reserva['assento'], 
                 )
                 reservas_list.append(reserva)
             return reservas_list

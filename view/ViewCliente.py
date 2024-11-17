@@ -55,8 +55,9 @@ class TelaCliente:
         
 
     def minhas_reservas(self):
-        # Implementar redirecionamento para minhas reservas
-        Sg.popup("Funcionalidade de Minhas Reservas não implementada ainda.")
+        self.janela.close()
+        from view.ViewMinhasReservas import TelaMinhasReservas
+        TelaMinhasReservas(self.controlador).abrir()
 
     def alterar_dados(self):
         self.janela.close()
