@@ -3,7 +3,8 @@ import datetime
 from model.Pessoas import Aeromocas, Pilotos
 
 class Voos:
-    def __init__(self, cod: str, aeronave: Aeronaves, assentos: dict, origem: str, destino: str, data: datetime.datetime, horario_decolagem: str, pilotos: Pilotos, aeromocas: list):
+    def __init__(self, cod: str, aeronave: Aeronaves, assentos: dict, origem: str, destino: str, data: datetime.datetime, 
+                 horario_decolagem: str, piloto: Pilotos, copiloto: Pilotos, aeromoca1: Aeromocas, aeromoca2: Aeromocas):
         self.__cod = cod
         self.__aeronave = aeronave
         self.__assentos = assentos
@@ -11,8 +12,12 @@ class Voos:
         self.__destino = destino
         self.__data = data
         self.__horario_decolagem = horario_decolagem
-        self.__pilotos = pilotos
-        self.__aeromocas = aeromocas
+        self.__piloto = piloto
+        self.__copiloto = copiloto
+        self.__aeromoca1 = aeromoca1
+        self.__aeromoca2 = aeromoca2
+
+    # Propriedades e validadores
 
     @property
     def cod(self):
@@ -78,19 +83,37 @@ class Voos:
             self.__horario_decolagem = new_horario
 
     @property
-    def pilotos(self):
-        return self.__pilotos
+    def piloto(self):
+        return self.__piloto
     
-    @pilotos.setter
-    def pilotos(self, new_piloto):
+    @piloto.setter
+    def piloto(self, new_piloto):
         if isinstance(new_piloto, Pilotos):
-            self.__pilotos = new_piloto
+            self.__piloto = new_piloto
 
     @property
-    def aeromocas(self):
-        return self.__aeromocas
+    def copiloto(self):
+        return self.__copiloto
     
-    @aeromocas.setter
-    def aeromocas(self, new_aeromoca):
-        if isinstance(new_aeromoca, list) and all(isinstance(a, Aeromocas) for a in new_aeromoca):
-            self.__aeromocas = new_aeromoca
+    @copiloto.setter
+    def copiloto(self, new_copiloto):
+        if isinstance(new_copiloto, Pilotos):
+            self.__copiloto = new_copiloto
+
+    @property
+    def aeromoca1(self):
+        return self.__aeromoca1
+    
+    @aeromoca1.setter
+    def aeromoca1(self, new_aeromoca1):
+        if isinstance(new_aeromoca1, Aeromocas):
+            self.__aeromoca1 = new_aeromoca1
+
+    @property
+    def aeromoca2(self):
+        return self.__aeromoca2
+    
+    @aeromoca2.setter
+    def aeromoca2(self, new_aeromoca2):
+        if isinstance(new_aeromoca2, Aeromocas):
+            self.__aeromoca2 = new_aeromoca2

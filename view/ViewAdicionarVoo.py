@@ -90,11 +90,12 @@ class ViewAdicionarVoo:
                 codigo_voo = self.controlador.controlador_voo.gerar_codigo_voo()
 
                 # Cadastro de voo no sistema
-                sucesso, mensagem = self.controlador.cadastrar_voo(
+                sucesso, mensagem = self.controlador.controlador_voo.cadastrar_voo(
                     codigo_voo, valores['aeronave'], valores['origem'], valores['destino'],
                     valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
-                    valores['aeromoca1'], valores['aeromoca2'],
+                    valores['aeromoca1'], valores['aeromoca2']
                 )
+
 
 
                 # Exibir mensagem de confirmação ou erro
