@@ -8,9 +8,6 @@ class DAOReserva(DAO):
         self.__collection = self.db['reservas']
 
     def adicionar(self, reserva):
-        print("AAAAAAAAAAAAAAAAAAAAAA")
-        print(reserva.cliente)
-        print(reserva.to_dict())
        
         try:
             result = self.__collection.insert_one(reserva.to_dict())

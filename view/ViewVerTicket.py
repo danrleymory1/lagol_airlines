@@ -2,9 +2,9 @@ import sys
 import PySimpleGUI as Sg
 
 class TelaVerTicket:
-    def __init__(self, controlador, reserva):
+    def __init__(self, controlador, reserva_cod):
         self.__controlador = controlador
-        self.reserva = self.__controlador.controlador_reserva.buscar_reserva_por_cod(reserva)
+        self.reserva = self.__controlador.controlador_reserva.buscar_reserva_por_cod(reserva_cod)
         
         self.janela = None
         self.criar_janela()
