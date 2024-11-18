@@ -21,15 +21,15 @@ class ViewAdicionarVoo:
         aeromocas = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Aeromoca"]
 
         layout = [
-            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave')],
+            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave', readonly=True)],
             [Sg.Text('Origem'), Sg.Input(key='origem')],
             [Sg.Text('Destino'), Sg.Input(key='destino')],
-            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data'), Sg.CalendarButton('Selecionar Data', target='data', format='%d/%m/%Y', default_date_m_d_y=(datetime.now().month, datetime.now().day, datetime.now().year))],
-            [Sg.Text('Hora de Decolagem'), Sg.Combo([f"{h:02d}:00" for h in range(24)], key='hora')],
-            [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto')],
-            [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto')],
-            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1')],
-            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, key='aeromoca2')],
+            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data', readonly=True), Sg.CalendarButton('Selecionar Data', target='data', format='%d/%m/%Y', default_date_m_d_y=(datetime.now().month, datetime.now().day, datetime.now().year))],
+            [Sg.Text('Hora de Decolagem'), Sg.Combo([f"{h:02d}:00" for h in range(24)], key='hora', readonly=True)],
+            [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto', readonly=True)],
+            [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto', readonly=True)],
+            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1', readonly=True)],
+            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, key='aeromoca2', readonly=True)],
             [Sg.Button('Adicionar', size=(10, 1)), Sg.Button('Cancelar', size=(10, 1))]
         ]
         self.janela = Sg.Window('Adicionar Voo', layout)
@@ -38,7 +38,7 @@ class ViewAdicionarVoo:
         try:
             # Validação da Aeronave
             if not valores['aeronave']:
-                raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
+                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
             if len(valores['origem']) < 3:
@@ -71,7 +71,9 @@ class ViewAdicionarVoo:
 
             # Validação da Hora de Decolagem
             hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            return True, "Dados válidos", data, hora
+            return True, "Entrada em 'hora de decolagem' inválida, tente novamente", data, hora
+        
+        
 
         except ValueError as e:
             Sg.popup(str(e))
@@ -110,8 +112,6 @@ class ViewAdicionarVoo:
 
 
 """
-import PySimpleGUI as Sg
-from datetime import datetime
 
 class ViewAdicionarVoo:
     def __init__(self, controlador):
@@ -119,33 +119,13 @@ class ViewAdicionarVoo:
         self.janela = None
         self.criar_janela()
 
-    def criar_janela(self):
-        # Lista de opções para aviões, pilotos, copilotos e aeromoças
-        avioes = ["Avião 1", "Avião 2", "Avião 3"]
-        pilotos = ["Piloto 1", "Piloto 2"]
-        copilotos = ["Copiloto 1", "Copiloto 2"]
-        aeromocas = ["Aeromoça 1", "Aeromoça 2", "Aeromoça 3"]
 
-        layout = [
-            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave', readonly=True)],
-            [Sg.Text('Origem'), Sg.Input(key='origem')],
-            [Sg.Text('Destino'), Sg.Input(key='destino')],
-            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data')],
-            [Sg.Text('Hora de Decolagem (hh:mm)'), Sg.Input(key='hora')],
-            [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto', readonly=True)],
-            [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto', readonly=True)],
-            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1', readonly=True)],
-            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, key='aeromoca2', readonly=True)],
-            [Sg.Button('Adicionar', size=(10, 1)), Sg.Button('Cancelar', size=(10, 1))]
-        ]
-
-        self.janela = Sg.Window('Adicionar Voo', layout)
 
     def validar_dados(self, valores):
         try:
             # Validação da Aeronave
             if not valores['aeronave']:
-                raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
+                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
             if len(valores['origem']) < 3:

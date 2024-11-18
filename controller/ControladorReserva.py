@@ -12,6 +12,8 @@ class ControladorReserva:
         self.__dao_aeronave = DAOAeronaves()
 
     def cadastrar_reserva(self, passageiro, cliente, voo_cod):
+        print(cliente)
+        print(cliente.cpf)
         while True:
             cod = ''.join(random.choices(string.digits + string.ascii_uppercase, k=5))
             if self.validar_codigo(cod):
@@ -22,6 +24,8 @@ class ControladorReserva:
             return False, "Voo não encontrado."
 
         reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=None)
+
+        print(reserva)
 
         if self.__dao_reserva.adicionar(reserva):
             return cod, "Reserva realizada com sucesso!"
@@ -50,6 +54,13 @@ class ControladorReserva:
             return True, "Reserva deletada com sucesso!"
         else:
             return False, "Erro ao deletar reserva. Tente novamente."
+        
+    def deletar_reservas_por_voo(self, voo_cod):
+        print(f"Deletando reservas do voo {voo_cod}")
+        reservas = self.__dao_reserva.buscar_reservas({"voo": int(voo_cod)})
+        print(f"Reservas encontradas: {reservas}")
+        for reserva in reservas:
+            self.deletar_reserva(reserva.cod)
 
     def selecionar_assento_disponivel(self, aeronave, voo):
         total_assentos = [f"{row}{chr(65 + col)}" for row in range(1, aeronave.fileiras + 1) for col in range(aeronave.assentos_por_fileira)]
