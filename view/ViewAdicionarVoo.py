@@ -91,6 +91,7 @@ class ViewAdicionarVoo:
                 # Gerar código automaticamente (incrementando a quantidade de voos cadastrados)
                 codigo_voo = self.controlador.controlador_voo.gerar_codigo_voo()
 
+                
                 # Cadastro de voo no sistema
                 sucesso, mensagem = self.controlador.controlador_voo.cadastrar_voo(
                     valores['aeronave'], valores['origem'], valores['destino'],
@@ -108,7 +109,8 @@ class ViewAdicionarVoo:
         self.janela.close()
 
 
-"""import PySimpleGUI as Sg
+"""
+import PySimpleGUI as Sg
 from datetime import datetime
 
 class ViewAdicionarVoo:
