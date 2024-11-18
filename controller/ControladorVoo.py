@@ -23,7 +23,7 @@ class ControladorVoo:
             
             # Validação da Aeronave
             if not aeronave:
-                raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
+                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
             if len(origem) < 3:

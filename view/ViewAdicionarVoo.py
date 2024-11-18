@@ -38,7 +38,7 @@ class ViewAdicionarVoo:
         try:
             # Validação da Aeronave
             if not valores['aeronave']:
-                raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
+                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
             if len(valores['origem']) < 3:
@@ -125,7 +125,7 @@ class ViewAdicionarVoo:
         try:
             # Validação da Aeronave
             if not valores['aeronave']:
-                raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
+                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
             if len(valores['origem']) < 3:

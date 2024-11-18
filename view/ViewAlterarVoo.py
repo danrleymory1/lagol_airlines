@@ -43,40 +43,40 @@ class ViewAlterarVoo:
         try:
             # Validação da Aeronave
             if not valores['aeronave']:
-                raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação da Origem
             if len(valores['origem']) < 3:
-                raise ValueError("Entrada em 'origem' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação do Destino
             if len(valores['destino']) < 3 or valores['destino'] == valores['origem']:
-                raise ValueError("Entrada em 'destino' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação da Data
             data = datetime.strptime(valores['data'], '%d/%m/%Y')
             if data <= datetime.now():
-                raise ValueError("Entrada em 'data' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação do Piloto
             if not valores['piloto']:
-                raise ValueError("Entrada em 'piloto' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação do Copiloto
             if not valores['copiloto']:
-                raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação da Aeromoça 1
             if not valores['aeromoca1']:
-                raise ValueError("Entrada em 'aeromoça 1' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação da Aeromoça 2
             if not valores['aeromoca2']:
-                raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
+                raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação da Hora de Decolagem
             hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            return True, "Entrada em 'hora de decolagem' inválida, tente novamente", data, hora
+            return True, "Informação alterada inválida, por favor, tente novamente", data, hora
 
         except ValueError as e:
             Sg.popup(str(e))
@@ -110,7 +110,7 @@ class ViewAlterarVoo:
                     continue
 
                 if sucesso:
-                    Sg.popup("Informações do voo alteradas com sucesso!")
+                    Sg.popup("Informação do voo alterado com sucesso!")
                     break
                 else:
                     Sg.popup("Informação alterada inválida, por favor, tente novamente")
