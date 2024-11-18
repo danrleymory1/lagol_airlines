@@ -103,18 +103,11 @@ class ControladorVoo:
             print(f"Erro ao buscar voo: {e}")
             return None
 
-    def alterar_voo(self, cod, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
-
+    def alterar_voo(self, voo, aeronave=None, origem=None, destino=None, data=None, hora=None, piloto=None, copiloto=None, aeromoca1=None, aeromoca2=None):
         try:
-            # Certifique-se de que 'cod' é válido e o voo existe
-            voo = self.dao_voos.buscar_por_codigo(cod)
-            if not voo:
-                return False, "Voo não encontrado."
-
             # Atualização dos dados do voo
             if aeronave:
                 voo.aeronave = aeronave
-
             if origem:
                 voo.origem = origem
             if destino:
@@ -137,11 +130,11 @@ class ControladorVoo:
             if sucesso:
                 return True, "Informação do voo alterado com sucesso!"
             else:
-                return False, "Erro ao salvar alterações no banco de dados."
-
+                return False, "Informação alterada inválida, por favor, tente novamente"
         except Exception as e:
             print(f"Erro ao alterar voo: {e}")
             return False, "Erro inesperado ao alterar voo."
+
 
 
     def deletar_voo(self, cod):

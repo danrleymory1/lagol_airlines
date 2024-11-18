@@ -100,10 +100,13 @@ class ViewAlterarVoo:
                 print(self.voo)
                 
 
-                sucesso, mensagem = self.controlador.controlador_voo.alterar_voo(self.voo.cod,
+                sucesso, mensagem = self.controlador.controlador_voo.alterar_voo(
+                    self.voo,  # Passa o objeto voo diretamente
                     valores['aeronave'], valores['origem'], valores['destino'],
                     valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
-                    valores['aeromoca1'], valores['aeromoca2'])
+                    valores['aeromoca1'], valores['aeromoca2']
+                )
+
 
                 if sucesso is None:
                     Sg.popup("Erro inesperado ao tentar alterar o voo.")
