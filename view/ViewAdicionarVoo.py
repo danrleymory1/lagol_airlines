@@ -125,17 +125,18 @@ class ViewAdicionarVoo:
         aeromocas = ["Aeromoça 1", "Aeromoça 2", "Aeromoça 3"]
 
         layout = [
-            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave')],
+            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave', readonly=True)],
             [Sg.Text('Origem'), Sg.Input(key='origem')],
             [Sg.Text('Destino'), Sg.Input(key='destino')],
             [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data')],
             [Sg.Text('Hora de Decolagem (hh:mm)'), Sg.Input(key='hora')],
-            [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto')],
-            [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto')],
-            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1')],
-            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, key='aeromoca2')],
+            [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto', readonly=True)],
+            [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto', readonly=True)],
+            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1', readonly=True)],
+            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, key='aeromoca2', readonly=True)],
             [Sg.Button('Adicionar', size=(10, 1)), Sg.Button('Cancelar', size=(10, 1))]
         ]
+
         self.janela = Sg.Window('Adicionar Voo', layout)
 
     def validar_dados(self, valores):

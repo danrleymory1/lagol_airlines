@@ -19,10 +19,17 @@ class DAOVoo(DAO):
             return False
 
     def buscar_por_codigo(self, cod):
-        voo_dict = self.__collection.find_one({"cod": cod})
+        #print(f"Buscando voo com código: {cod} (tipo: {type(cod)})")
+        voo_dict = self.__collection.find_one({"cod": int(cod)})  # Converte 'cod' para inteiro
+        #print(f"Resultado da busca no banco: {voo_dict}")
         if voo_dict:
-            return self.dict_to_voo(voo_dict)
+            voo = self.dict_to_voo(voo_dict)
+            #print(f"Objeto convertido: {voo}")
+            return voo
+        print("Nenhum voo encontrado.")
         return None
+
+
 
     def buscar_voos(self):
         voos_dict = self.__collection.find()
@@ -67,17 +74,30 @@ class DAOVoo(DAO):
 
     def dict_to_voo(self, voo_dict: dict):
         """Converte um dicionário em um objeto Voos."""
+        horario_decolagem = voo_dict.get('horario_decolagem', '')
+
+        # Se o horario_decolagem for um número (em minutos), converte para o formato HH:MM
+        if isinstance(horario_decolagem, int):
+            horas = horario_decolagem // 60
+            minutos = horario_decolagem % 60
+            horario_decolagem = f"{horas:02d}:{minutos:02d}"
+
+        # Se o horario_decolagem for uma string no formato HH:MM, mantemos como está
+        elif isinstance(horario_decolagem, str) and len(horario_decolagem) == 5:
+            pass  # Mantém a string como está se já estiver no formato correto
+
         return Voos(
-            cod=voo_dict.get('cod', ''),  # Se não houver, retorna uma string vazia
+            cod=voo_dict.get('cod', ''),
             aeronave=Aeronaves.from_dict(voo_dict['aeronave']) if isinstance(voo_dict.get('aeronave'), dict) else voo_dict.get('aeronave'),
-            assentos=voo_dict.get('assentos', {}),  # Se não houver, retorna um dicionário vazio
+            assentos=voo_dict.get('assentos', {}),
             origem=voo_dict.get('origem', ''),
             destino=voo_dict.get('destino', ''),
             data=datetime.datetime.fromisoformat(voo_dict.get('data', '1970-01-01T00:00:00')) if isinstance(voo_dict.get('data'), str) else voo_dict.get('data'),
-            horario_decolagem=voo_dict.get('horario_decolagem', ''),
+            horario_decolagem=horario_decolagem,  # Já convertido ou mantido como está
             piloto=Pilotos.from_dict(voo_dict['piloto']) if isinstance(voo_dict.get('piloto'), dict) else voo_dict.get('piloto'),
             copiloto=Pilotos.from_dict(voo_dict.get('copiloto')) if isinstance(voo_dict.get('copiloto'), dict) else voo_dict.get('copiloto'),
             aeromoca1=Aeromocas.from_dict(voo_dict.get('aeromoca1')) if isinstance(voo_dict.get('aeromoca1'), dict) else voo_dict.get('aeromoca1'),
             aeromoca2=Aeromocas.from_dict(voo_dict.get('aeromoca2')) if isinstance(voo_dict.get('aeromoca2'), dict) else voo_dict.get('aeromoca2')
         )
+
 
