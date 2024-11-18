@@ -39,8 +39,8 @@ class DAOVoo(DAO):
         return voos_list
 
     def atualizar(self, voo: Voos):
-        print('BBBBBBBBBBBBBBB')
-        print(self.voo_to_dict(voo))
+        
+        
         try:
             result = self.__collection.update_one(
                 {"cod": voo.cod},
@@ -60,8 +60,20 @@ class DAOVoo(DAO):
             return False
 
     def voo_to_dict(self, voo: Voos):
-        print("AAAAAAAAAAAAAAAAAA")
-     
+
+        hora = ""
+        if voo.horario_decolagem.hour < 10:
+            hora = "0" + str(voo.horario_decolagem.hour)
+        else:
+            hora = str(voo.horario_decolagem.hour)
+
+        minutos = ""
+        if voo.horario_decolagem.minute < 10:
+            minutos = "0" + str(voo.horario_decolagem.minute)
+        else:
+            minutos = str(voo.horario_decolagem.minute)
+        horario = hora + ":" + minutos
+         
         """Converte um objeto Voos em um dicionário para armazenamento."""
         return {
             "cod": voo.cod,
@@ -74,7 +86,7 @@ class DAOVoo(DAO):
             "copiloto": voo.copiloto,
             "aeromoca1": voo.aeromoca1,
             "aeromoca2": voo.aeromoca2,
-            "horario_decolagem": str(voo.horario_decolagem.hour) + ":" + str(voo.horario_decolagem.minute)
+            "horario_decolagem": horario
         }
 
     def dict_to_voo(self, voo_dict: dict):
