@@ -95,10 +95,15 @@ class ControladorVoo:
 
     def buscar_voo_por_codigo(self, cod):
         try:
-            return self.dao_voos.buscar_por_codigo(cod)
+            voo = self.dao_voos.buscar_por_codigo(cod)
+            if voo:
+                # Verificando e imprimindo o horário de decolagem
+                print(f"Horário de decolagem: {voo.horario_decolagem}")
+            return voo
         except Exception as e:
             print(f"Erro ao buscar voo: {e}")
             return None
+
 
     def alterar_voo(self, cod, nova_aeronave=None, novos_assentos=None, nova_origem=None, novo_destino=None, nova_data=None, novo_piloto=None, nova_aeromoca=None):
         #RETIRAR ESSA BUSCA POR VOO
@@ -132,8 +137,8 @@ class ControladorVoo:
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
+            print("Voo não encontrado.")
             return False, "Voo não encontrado."
-
         try:
             if self.dao_voos.deletar(cod):
                 return True, "Voo deletado com sucesso!"
