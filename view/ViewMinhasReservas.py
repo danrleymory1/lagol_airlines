@@ -86,11 +86,19 @@ class TelaMinhasReservas:
 
     def cancelar_voo(self, reserva_cod):
         print("1")
-        try:
-            self.controlador.controlador_reserva.deletar_reserva(reserva_cod)
-            print("3")
-            Sg.popup("Reserva cancelada com sucesso.")
-        except Exception as e:
-            Sg.popup_error(f"Erro ao cancelar reserva: {e}")
-        self.janela.close()
-        self.abrir()
+        res = Sg.popup("Tem certeza que deseja excluir este voo?", title="Excluir Voo",  custom_text=("Confirmar", "Cancelar"))
+        if res == "Confirmar":
+            try:
+                self.controlador.controlador_reserva.deletar_reserva(reserva_cod)
+                Sg.popup("Reserva cancelada com sucesso.")
+            except Exception as e:
+                Sg.popup_error(f"Erro ao cancelar reserva: {e}")
+
+            self.janela.close()
+            self.ir_para_tela_cliente()
+        else:
+            Sg.popup("Sua reserva NÃO foi cancelada!")
+            self.janela.close()
+            self.criar_janela()
+
+            

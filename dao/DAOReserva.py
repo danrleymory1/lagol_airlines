@@ -34,11 +34,14 @@ class DAOReserva(DAO):
 
 
     def buscar_reservas(self, filtros):
+        print(filtros)
         reservas_dict = self.__collection.find(filtros)
+        print(f"Reservas dict encontradas {reservas_dict}")
         reservas_list = []
 
         if reservas_dict:
             for reserva in reservas_dict:
+                print(reserva)
                 reserva = Reservas(
                     cod=reserva['cod'],
                     passageiro=reserva['passageiro'],

@@ -4,8 +4,14 @@ import PySimpleGUI as Sg
 class TelaVerTicket:
     def __init__(self, controlador, reserva_cod):
         self.__controlador = controlador
-        self.reserva = self.__controlador.controlador_reserva.buscar_reserva_por_cod(reserva_cod)
+
+        print("AAAAAAAAAAAAAAAA")
+        print(reserva_cod)
         
+        self.reserva = self.__controlador.controlador_reserva.buscar_reserva_por_cod(reserva_cod)
+        if not self.reserva:
+            Sg.Popup("Reserva não encontrada")
+            return
         self.janela = None
         self.criar_janela()
 

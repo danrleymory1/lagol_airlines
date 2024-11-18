@@ -6,8 +6,9 @@ from model.Pessoas.Aeromocas import Aeromocas
 from datetime import datetime
 
 class ControladorVoo:
-    def __init__(self):
+    def __init__(self, controlador):
         self.dao_voos = DAOVoo()
+        self.__controlador = controlador
 
     def gerar_codigo_voo(self):
         # Gera um código de voo automaticamente, incrementando a partir do último código.
@@ -103,6 +104,7 @@ class ControladorVoo:
             return None
 
     def alterar_voo(self, cod, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
+
         try:
             # Certifique-se de que 'cod' é válido e o voo existe
             voo = self.dao_voos.buscar_por_codigo(cod)
@@ -112,6 +114,7 @@ class ControladorVoo:
             # Atualização dos dados do voo
             if aeronave:
                 voo.aeronave = aeronave
+
             if origem:
                 voo.origem = origem
             if destino:
@@ -135,6 +138,7 @@ class ControladorVoo:
                 return True, "Informação do voo alterado com sucesso!"
             else:
                 return False, "Erro ao salvar alterações no banco de dados."
+
         except Exception as e:
             print(f"Erro ao alterar voo: {e}")
             return False, "Erro inesperado ao alterar voo."
@@ -143,11 +147,11 @@ class ControladorVoo:
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
-            print("Voo não encontrado.")
             return False, "Voo não encontrado."
 
         try:
             if self.dao_voos.deletar(cod):
+                self.__controlador.controlador_reserva.deletar_reservas_por_voo(cod)
                 return True, "Voo deletado com sucesso!"
         except Exception as e:
             print(f"Erro ao deletar voo: {e}")
