@@ -46,7 +46,7 @@ class ControladorReserva:
 
         sucesso = self.__dao_reserva.deletar(cod)
         if sucesso:
-            self.atualizar_assentos_voo(reserva.voo, reserva.assento, adicionar=False)  # Liberar o assento
+            self.liberar_assento(cod, reserva.assento)
             return True, "Reserva deletada com sucesso!"
         else:
             return False, "Erro ao deletar reserva. Tente novamente."
@@ -75,6 +75,28 @@ class ControladorReserva:
         total_assentos = [f"{fileira}{chr(65 + col)}" for col in range(aeronave.assentos_por_fileira)]
         ocupados = list(voo.assentos.values()) if isinstance(voo.assentos, dict) else []
         return [assento for assento in total_assentos if assento not in ocupados]
+    
+    def liberar_assento(self, reserva_cod, assento):
+
+        reserva = self.__dao_reserva.buscar_por_cod(reserva_cod)
+        if not reserva:
+            return False, "Reserva não encontrada."
+
+        voo = self.__dao_voo.buscar_por_codigo(reserva.voo)
+        if not voo:
+            return False, "Voo não encontrado."
+
+        if assento not in voo.assentos:
+            return False, "Assento não ocupado."
+        else:
+            del voo.assentos[assento]
+            sucesso = self.__dao_voo.atualizar(voo)
+            if sucesso:
+                reserva.assento = None
+                self.__dao_reserva.atualizar(reserva)
+                return True, "Assento liberado com sucesso."
+            else:
+                return False, "Erro ao liberar o assento."
 
     def atualizar_assento(self, reserva_cod, novo_assento):
         reserva = self.__dao_reserva.buscar_por_cod(reserva_cod)

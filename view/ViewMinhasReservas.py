@@ -13,8 +13,11 @@ class TelaMinhasReservas:
     def criar_janela(self):
         layout = []
 
-        print(self.controlador.controlador_cliente.cliente_logado.cpf)
-        print(self.controlador.controlador_reserva.buscar_reservas_por_cliente(self.controlador.controlador_cliente.cliente_logado.cpf))
+        if not self._reservas:
+            layout.append([Sg.Text("Nenhuma reserva encontrada.")])
+            layout.append([Sg.Button("Voltar", size=(10, 1))])
+            self.janela = Sg.Window("Minhas Reservas", layout)
+            return
 
         # Para cada reserva, criamos um "card" com as informações e botões
         for i, reserva in enumerate(self._reservas):
@@ -28,7 +31,6 @@ class TelaMinhasReservas:
                 [
                     Sg.Button("Adicionar bagagem", key=f"add_bagagem_{i}", size=(15, 1)),
                     Sg.Button("Alterar assento", key=f"alterar_assento_{i}", size=(15, 1)),
-                    Sg.Push(),
                     Sg.Button("Ver Ticket", key=f"ver_ticket_{i}", size=(10, 1)),
                     Sg.Button("Remarcar voo", key=f"remarcar_voo_{i}", size=(15, 1)),
                     Sg.Button("Cancelar", key=f"cancelar_{i}", size=(10, 1)),
@@ -60,7 +62,7 @@ class TelaMinhasReservas:
                 elif event == f"remarcar_voo_{i}":
                     Sg.popup(f"Função não implementada ainda")
                 elif event == f"cancelar_{i}":
-                    Sg.popup(f"Função não implementada ainda")
+                    self.cancelar_voo(self._reservas[i].cod)
 
     def ir_para_tela_cliente(self):
         self.janela.close()
@@ -81,3 +83,14 @@ class TelaMinhasReservas:
         self.janela.close()
         from view.ViewSelecionarAssento import ViewSelecionarAssento
         ViewSelecionarAssento(self.controlador, reserva).abrir()
+
+    def cancelar_voo(self, reserva_cod):
+        print("1")
+        try:
+            self.controlador.controlador_reserva.deletar_reserva(reserva_cod)
+            print("3")
+            Sg.popup("Reserva cancelada com sucesso.")
+        except Exception as e:
+            Sg.popup_error(f"Erro ao cancelar reserva: {e}")
+        self.janela.close()
+        self.abrir()

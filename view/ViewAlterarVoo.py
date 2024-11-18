@@ -5,10 +5,7 @@ class ViewAlterarVoo:
     def __init__(self, controlador, voo):
         self.controlador = controlador
         self.voo = voo  # Informações do voo a ser alterado
-        print(self.voo.data)
-        print(type(self.voo.data))
-        print(self.voo.data.month)
-        print(type(self.voo.data.month))
+        
         if not self.voo:  # Verifica se self.voo é None
             raise ValueError("Não foi possível encontrar o voo para alterar.")
         self.janela = None

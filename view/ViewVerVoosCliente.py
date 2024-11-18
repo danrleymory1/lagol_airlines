@@ -10,27 +10,36 @@ class TelaVerVoosCliente:
         self.criar_janela()
 
     def criar_janela(self):
-        # Cabeçalho e layout inicial
+    # Cabeçalho e layout inicial
         layout = [
             [Sg.Button('Retornar', size=(10, 1)), Sg.Push()],
             [Sg.Push(), Sg.Text('Ver voos', font=("Arial", 14)), Sg.Push()],
-            [Sg.Column([[Sg.Text(f"{'Origem':<20} {'Destino':<20} {'Data':<15} {'Horario'}")]])],  # Cabeçalho da lista
-            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(500, 300))],
-            
+            [
+                Sg.Text("Origem", size=(15, 1)),
+                Sg.Text("Destino", size=(15, 1)),
+                Sg.Text("Data", size=(12, 1)),
+                Sg.Text("Horário", size=(10, 1)),
+                Sg.Text("", size=(8, 1)),  # Espaço para os botões
+            ],  # Cabeçalho com tamanhos fixos
+            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(550, 300))],
         ]
 
         # Cria a janela
         self.janela = Sg.Window('Ver voos', layout, size=(600, 500))
+
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
         if voos:
             voos_layout = []
             for voo in voos:
+                data = f"{voo.data.day}/{voo.data.month}/{voo.data.year}"
                 voos_layout.append([
-                    Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data:<15} {voo.horario_decolagem:<8}"),
-                    Sg.Push(),
-                    Sg.Button('Escolher', key=f'escolher_{voo.cod}', size=(10, 1))
+                    Sg.Text(voo.origem, size=(15, 1)),  # Coluna "Origem"
+                    Sg.Text(voo.destino, size=(15, 1)),  # Coluna "Destino"
+                    Sg.Text(data, size=(12, 1)),  # Coluna "Data"
+                    Sg.Text(voo.horario_decolagem, size=(10, 1)),  # Coluna "Horário"
+                    Sg.Button('Escolher', key=f'escolher_{voo.cod}', size=(8, 1)),  # Botão
                 ])
             return voos_layout
         else:
