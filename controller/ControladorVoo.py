@@ -103,50 +103,42 @@ class ControladorVoo:
             return None
 
     def alterar_voo(self, cod, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
-        #RETIRAR ESSA BUSCA POR VOO
-        voo = self.buscar_voo_por_codigo(cod)
-        if not voo:
-            return False, "Voo não encontrado."
-        print(voo)
-        # Atualizar informações do voo com verificações de parâmetros
         try:
+            # Certifique-se de que 'cod' é válido e o voo existe
+            voo = self.dao_voos.buscar_por_codigo(cod)
+            if not voo:
+                return False, "Voo não encontrado."
+
+            # Atualização dos dados do voo
             if aeronave:
                 voo.aeronave = aeronave
-            print("A1")
             if origem:
                 voo.origem = origem
-            print("A2")
             if destino:
                 voo.destino = destino
-            print("A3")
             if data:
-                voo.data = data
-            print("A4")
+                voo.data = datetime.strptime(data, '%d/%m/%Y').date()
             if hora:
-                hora_obj = datetime.strptime(hora, '%H:%M').time()
-                voo.horario_decolagem = hora_obj
-                print(hora_obj)
-                print(hora_obj.hour)
-            print("A5")
+                voo.horario_decolagem = datetime.strptime(hora, '%H:%M').time()
             if piloto:
-                voo.piloto =piloto
-            print("A6")
-            if copiloto:    
+                voo.piloto = piloto
+            if copiloto:
                 voo.copiloto = copiloto
-            print("A7")
-            if aeromoca1:            
+            if aeromoca1:
                 voo.aeromoca1 = aeromoca1
-            print("A8")
             if aeromoca2:
                 voo.aeromoca2 = aeromoca2
 
-            print("INDo pro atualizar")
-
-            if self.dao_voos.atualizar(voo):
-                return True, "Dados do voo alterados com sucesso!"
+            # Persistir alterações no DAO
+            sucesso = self.dao_voos.atualizar(voo)
+            if sucesso:
+                return True, "Informação do voo alterado com sucesso!"
+            else:
+                return False, "Erro ao salvar alterações no banco de dados."
         except Exception as e:
-            print(f"Erro ao atualizar voo no controlador: {e}")
-            return False, "Erro ao alterar os dados do voo."
+            print(f"Erro ao alterar voo: {e}")
+            return False, "Erro inesperado ao alterar voo."
+
 
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)

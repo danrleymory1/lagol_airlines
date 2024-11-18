@@ -76,7 +76,7 @@ class ViewAlterarVoo:
 
             # Validação da Hora de Decolagem
             hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            return True, "Dados válidos", data, hora
+            return True, "Entrada em 'hora de decolagem' inválida, tente novamente", data, hora
 
         except ValueError as e:
             Sg.popup(str(e))
@@ -94,18 +94,25 @@ class ViewAlterarVoo:
                     continue
 
                 # Cadastro de voo no sistema
+
+                print(f"Cod: {self.voo.cod}, data: {valores['data']}, Origem: {valores['origem']}, Destino: {valores['destino']}")
+
+                print(self.voo)
                 
+
                 sucesso, mensagem = self.controlador.controlador_voo.alterar_voo(self.voo.cod,
                     valores['aeronave'], valores['origem'], valores['destino'],
                     valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
-                    valores['aeromoca1'], valores['aeromoca2']
-                )
+                    valores['aeromoca1'], valores['aeromoca2'])
 
-                # Exibir mensagem de confirmação ou erro
+                if sucesso is None:
+                    Sg.popup("Erro inesperado ao tentar alterar o voo.")
+                    continue
+
                 if sucesso:
-                    Sg.popup("Voo alterado com sucesso")
+                    Sg.popup("Informações do voo alteradas com sucesso!")
                     break
                 else:
-                    Sg.popup(mensagem)
+                    Sg.popup("Informação alterada inválida, por favor, tente novamente")
 
         self.janela.close()
