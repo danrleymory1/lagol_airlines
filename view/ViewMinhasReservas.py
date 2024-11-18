@@ -23,9 +23,9 @@ class TelaMinhasReservas:
         for i, reserva in enumerate(self._reservas):
 
             voo = self.controlador.controlador_voo.buscar_voo_por_codigo(reserva.voo)
-
+            
             layout += [
-                [Sg.Text(f"Voo: {reserva.voo}   Origem: {voo.origem}   Passageiro: {reserva.passageiro}", size=(50, 1))],
+                [Sg.Text(f"Voo: {reserva.voo}   Origem: {voo.origem}   Passageiro: {reserva.passageiro if reserva.passageiro else reserva.cliente}", size=(50, 1))],
                 [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}", size=(50, 1))],
                 [Sg.Text(f"Bagagens: {reserva.quant_bagagem}   Assento: {reserva.assento}", size=(50, 1))],
                 [
