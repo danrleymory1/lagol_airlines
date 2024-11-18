@@ -1,7 +1,8 @@
+from datetime import datetime
 import sys
 import PySimpleGUI as Sg
 
-from model.Pessoas import Passageiros
+from model.Pessoas.Passageiros import Passageiros
 from view.ViewVerTicket import TelaVerTicket
 
 class TelaFazerReserva:
@@ -77,21 +78,36 @@ class TelaFazerReserva:
                     else:
                         Sg.popup("Erro", resposta[1])
                 else:
+                    data_valida = self.validar_data(values["nascimento"])
+                    print(data_valida)
+                    print(data_valida[1])
+                    print(data_valida[0])
                     if not values["nome"]:
                         Sg.popup("Erro, preencha o campo nome.")
                     elif len(values["nome"]) < 3:
                         Sg.popup("Erro, o nome deve ter no mínimo 3 caracteres.")
                     elif not values["cpf"]:
                         Sg.popup("Erro, preencha o campo cpf.")
+                    elif len(values["cpf"]) != 11:
+                        Sg.popup("Erro, o cpf deve ter 11 numeros.")
+                    elif values["cpf"].isdigit() == False:
+                        Sg.popup("Erro, o cpf deve conter apenas números.")
+                    
                     elif not values["nascimento"]:
                         Sg.popup("Erro, preencha o campo nascimento.")
+                    
+                    
+                    elif not data_valida[0]:
+                       Sg.popup(data_valida[1])
+                        
                     else:
-                        passageiro = Passageiros(nome=values["nome"], cpf=values["cpf"], nascimento=values["nascimento"])
+                        passageiro = Passageiros(nome=values["nome"], cpf=values["cpf"], data_nascimento=datetime.strptime(values["nascimento"], "%d/%m/%Y"))
+                        print(passageiro)
 
-                        resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=None, cliente=self.controlador.controlador_cliente.cliente_logado.cod, voo_cod=self.__voo.cod)
+                        resposta = self.controlador.controlador_reserva.cadastrar_reserva(passageiro=passageiro, cliente=self.controlador.controlador_cliente.cliente_logado, voo_cod=self.__voo.cod)
                         if resposta[0]:
                             Sg.popup("Reserva Confirmada", "Sua reserva foi realizada com sucesso!")
-                            self.ir_pra_ticket(resposta[1])
+                            self.ir_pra_ticket(resposta[0])
                         else:
                             Sg.popup("Erro", resposta[1])
 
@@ -103,5 +119,18 @@ class TelaFazerReserva:
     def ir_pra_ticket(self, cod_reserva):
         self.janela.close()
         TelaVerTicket(self.controlador, cod_reserva).abrir()
+
+    def validar_data(self, data):
+        try:
+            data = datetime.strptime(data, "%d/%m/%Y")
+                        
+            hoje = datetime.now().date()
+                        
+            if data.date() > hoje:
+                return False, "A data não pode ser no futuro."
+            
+            return True, "Data válida."
+        except ValueError:
+            return False, "Data no formato inválido."
 
 

@@ -88,11 +88,10 @@ class Reservas:
             self.__compareceu = new_compareceu
 
     def to_dict(self):
-        print("BBBBBBBBBBBBB")
-        print(self.cliente)
+       
         reserva_dict = {
             "cod": self.__cod,
-            "passageiro": self.__passageiro,
+            "passageiro": self.__passageiro.cpf,
             "cliente": self.__cliente.cpf,
             "voo": self.__voo,
             "assento": self.__assento,
