@@ -6,8 +6,9 @@ from model.Pessoas.Aeromocas import Aeromocas
 from datetime import datetime
 
 class ControladorVoo:
-    def __init__(self):
+    def __init__(self, controlador):
         self.dao_voos = DAOVoo()
+        self.__controlador = controlador
 
     def gerar_codigo_voo(self):
         # Gera um código de voo automaticamente, incrementando a partir do último código.
@@ -107,40 +108,39 @@ class ControladorVoo:
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
             return False, "Voo não encontrado."
-        print(voo)
+        
         # Atualizar informações do voo com verificações de parâmetros
         try:
             if aeronave:
                 voo.aeronave = aeronave
-            print("A1")
+         
             if origem:
                 voo.origem = origem
-            print("A2")
+      
             if destino:
                 voo.destino = destino
-            print("A3")
+   
             if data:
                 voo.data = data
-            print("A4")
+    
             if hora:
                 hora_obj = datetime.strptime(hora, '%H:%M').time()
                 voo.horario_decolagem = hora_obj
-                print(hora_obj)
-                print(hora_obj.hour)
-            print("A5")
+                
+    
             if piloto:
                 voo.piloto =piloto
-            print("A6")
+   
             if copiloto:    
                 voo.copiloto = copiloto
-            print("A7")
+   
             if aeromoca1:            
                 voo.aeromoca1 = aeromoca1
-            print("A8")
+     
             if aeromoca2:
                 voo.aeromoca2 = aeromoca2
 
-            print("INDo pro atualizar")
+ 
 
             if self.dao_voos.atualizar(voo):
                 return True, "Dados do voo alterados com sucesso!"
@@ -151,11 +151,11 @@ class ControladorVoo:
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
-            print("Voo não encontrado.")
             return False, "Voo não encontrado."
 
         try:
             if self.dao_voos.deletar(cod):
+                self.__controlador.controlador_reserva.deletar_reservas_por_voo(cod)
                 return True, "Voo deletado com sucesso!"
         except Exception as e:
             print(f"Erro ao deletar voo: {e}")
