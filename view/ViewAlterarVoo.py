@@ -5,35 +5,40 @@ class ViewAlterarVoo:
     def __init__(self, controlador, voo):
         self.controlador = controlador
         self.voo = voo  # Informações do voo a ser alterado
+        print(self.voo.data)
+        print(type(self.voo.data))
+        print(self.voo.data.month)
+        print(type(self.voo.data.month))
         if not self.voo:  # Verifica se self.voo é None
             raise ValueError("Não foi possível encontrar o voo para alterar.")
         self.janela = None
         self.criar_janela()
 
+
     def criar_janela(self):
-        # Verificar se self.voo é None
-        if not self.voo:
-            Sg.popup("Erro: voo não encontrado!")
-            return
+        # Busca as aeronaves cadastradas no sistema
+        aeronaves = self.controlador.controlador_aeronave.listar_aeronaves()
+        avioes = [aeronave.modelo.nome for aeronave in aeronaves] if aeronaves else []
 
-        # Lista de opções para aviões, pilotos, copilotos e aeromoças
-        avioes = ["Avião 1", "Avião 2", "Avião 3"]
-        pilotos = ["Piloto 1", "Piloto 2"]
-        copilotos = ["Copiloto 1", "Copiloto 2"]
-        aeromocas = ["Aeromoça 1", "Aeromoça 2", "Aeromoça 3"]
+        # Busca os pilotos e copilotos cadastrados no sistema
+        todos_funcionarios = self.controlador.controlador_funcionario.buscar_todos_funcionarios()
+        pilotos = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Piloto"]
+        copilotos = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Piloto"]
 
-        # Layout com os campos preenchidos com as informações do voo selecionado
+        # Busca as aeromoças cadastradas no sistema
+        aeromocas = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Aeromoca"]
+
         layout = [
-            [Sg.Text('Aeronave'), Sg.Combo(avioes, default_value=self.voo.aeronave, key='aeronave')],
-            [Sg.Text('Origem'), Sg.Input(default_text=self.voo.origem, key='origem')],
-            [Sg.Text('Destino'), Sg.Input(default_text=self.voo.destino, key='destino')],
-            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(default_text=self.voo.data.strftime('%d/%m/%Y'), key='data')],
-            [Sg.Text('Hora de Decolagem (hh:mm)'), Sg.Input(default_text=self.voo.hora.strftime('%H:%M'), key='hora')],
-            [Sg.Text('Piloto'), Sg.Combo(pilotos, default_value=self.voo.piloto, key='piloto')],
-            [Sg.Text('Copiloto'), Sg.Combo(copilotos, default_value=self.voo.copiloto, key='copiloto')],
-            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, default_value=self.voo.aeromoca1, key='aeromoca1')],
-            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, default_value=self.voo.aeromoca2, key='aeromoca2')],
-            [Sg.Button('Salvar', size=(10, 1)), Sg.Button('Cancelar', size=(10, 1))]
+            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave',default_value=self.voo.aeronave)],
+            [Sg.Text('Origem'), Sg.Input(key='origem', default_text=self.voo.origem)],
+            [Sg.Text('Destino'), Sg.Input(key='destino', default_text=self.voo.destino)],
+            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data', default_text=str(self.voo.data.day) + "/" + str(self.voo.data.month) + "/" + str(self.voo.data.year)), Sg.CalendarButton('Selecionar Data', target='data', format='%d/%m/%Y', default_date_m_d_y=(self.voo.data.month, self.voo.data.day, self.voo.data.year))],
+            [Sg.Text('Hora de Decolagem'), Sg.Combo([f"{h:02d}:00" for h in range(24)], key='hora', default_value=self.voo.horario_decolagem)],
+            [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto', default_value=self.voo.piloto)],
+            [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto', default_value=self.voo.copiloto)],
+            [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1', default_value=self.voo.aeromoca1)],
+            [Sg.Text('Aeromoça 2'), Sg.Combo(aeromocas, key='aeromoca2', default_value=self.voo.aeromoca2)],
+            [Sg.Button('Alterar', size=(10, 1)), Sg.Button('Cancelar', size=(10, 1))]
         ]
         self.janela = Sg.Window('Alterar Voo', layout)
 
@@ -74,14 +79,10 @@ class ViewAlterarVoo:
 
             # Validação da Hora de Decolagem
             hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            if hora.hour >= 24 or hora.minute >= 60:
-                raise ValueError("Entrada em 'hora de decolagem' inválida, tente novamente")
-
             return True, "Dados válidos", data, hora
 
         except ValueError as e:
             Sg.popup(str(e))
-            self.janela.close()
             return False, str(e), None, None
 
     def abrir(self):
@@ -89,24 +90,24 @@ class ViewAlterarVoo:
             evento, valores = self.janela.read()
             if evento == Sg.WINDOW_CLOSED or evento == 'Cancelar':
                 break
-            elif evento == 'Salvar':
+            elif evento == 'Alterar':
                 # Validação dos dados
                 sucesso, mensagem, data, hora = self.validar_dados(valores)
                 if not sucesso:
-                    break
+                    continue
 
-                # Realizar a alteração do voo
-                sucesso, mensagem = self.controlador.controlador_voo.alterar_voo(
-                    self.voo.cod, valores['aeronave'], valores['origem'], valores['destino'],
-                    data, hora, valores['piloto'], valores['copiloto'],
+                # Cadastro de voo no sistema
+                sucesso, mensagem = self.controlador.controlador_voo.alterar_voo(self.voo.cod,
+                    valores['aeronave'], valores['origem'], valores['destino'],
+                    valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
                     valores['aeromoca1'], valores['aeromoca2']
                 )
 
-                # Exibir a mensagem de confirmação ou erro
+                # Exibir mensagem de confirmação ou erro
                 if sucesso:
-                    Sg.popup("Informação do voo alterado com sucesso!")
+                    Sg.popup("Voo alterado com sucesso")
                     break
                 else:
-                    Sg.popup("Informação alterada inválida, por favor, tente novamente")
+                    Sg.popup(mensagem)
 
         self.janela.close()

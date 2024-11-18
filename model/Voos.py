@@ -34,7 +34,7 @@ class Voos:
     
     @aeronave.setter
     def aeronave(self, new_aeronave):
-        if isinstance(new_aeronave, Aeronaves):
+        if isinstance(new_aeronave, str):
             self.__aeronave = new_aeronave
 
     @property
@@ -79,8 +79,7 @@ class Voos:
     
     @horario_decolagem.setter
     def horario_decolagem(self, new_horario):
-        if isinstance(new_horario, str):
-            self.__horario_decolagem = new_horario
+        self.__horario_decolagem = new_horario
 
     @property
     def piloto(self):
@@ -88,8 +87,7 @@ class Voos:
     
     @piloto.setter
     def piloto(self, new_piloto):
-        if isinstance(new_piloto, Pilotos):
-            self.__piloto = new_piloto
+        self.__piloto = new_piloto
 
     @property
     def copiloto(self):
@@ -97,8 +95,7 @@ class Voos:
     
     @copiloto.setter
     def copiloto(self, new_copiloto):
-        if isinstance(new_copiloto, Pilotos):
-            self.__copiloto = new_copiloto
+        self.__copiloto = new_copiloto
 
     @property
     def aeromoca1(self):
@@ -106,8 +103,7 @@ class Voos:
     
     @aeromoca1.setter
     def aeromoca1(self, new_aeromoca1):
-        if isinstance(new_aeromoca1, Aeromocas):
-            self.__aeromoca1 = new_aeromoca1
+        self.__aeromoca1 = new_aeromoca1
 
     @property
     def aeromoca2(self):
@@ -115,5 +111,4 @@ class Voos:
     
     @aeromoca2.setter
     def aeromoca2(self, new_aeromoca2):
-        if isinstance(new_aeromoca2, Aeromocas):
-            self.__aeromoca2 = new_aeromoca2
+        self.__aeromoca2 = new_aeromoca2

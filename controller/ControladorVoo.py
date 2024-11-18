@@ -19,6 +19,7 @@ class ControladorVoo:
 
     def cadastrar_voo(self, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
         try:
+            
             # Validação da Aeronave
             if not aeronave:
                 raise ValueError("Entrada em 'aeronave' inválida, tente novamente")
@@ -54,6 +55,7 @@ class ControladorVoo:
 
             # Validação da Hora de Decolagem
             hora_obj = datetime.strptime(hora, '%H:%M').time()
+           
             if hora_obj.hour >= 24 or hora_obj.minute >= 60:
                 raise ValueError("Entrada em 'hora de decolagem' inválida, tente novamente")
 
@@ -95,50 +97,62 @@ class ControladorVoo:
 
     def buscar_voo_por_codigo(self, cod):
         try:
-            voo = self.dao_voos.buscar_por_codigo(cod)
-            if voo:
-                # Verificando e imprimindo o horário de decolagem
-                print(f"Horário de decolagem: {voo.horario_decolagem}")
-            return voo
+            return self.dao_voos.buscar_por_codigo(cod)
         except Exception as e:
             print(f"Erro ao buscar voo: {e}")
             return None
 
-
-    def alterar_voo(self, cod, nova_aeronave=None, novos_assentos=None, nova_origem=None, novo_destino=None, nova_data=None, novo_piloto=None, nova_aeromoca=None):
+    def alterar_voo(self, cod, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
         #RETIRAR ESSA BUSCA POR VOO
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
             return False, "Voo não encontrado."
-
+        print(voo)
         # Atualizar informações do voo com verificações de parâmetros
         try:
-            if nova_aeronave:
-                voo.aeronave = nova_aeronave
-            if novos_assentos:
-                voo.assentos = novos_assentos
-            if nova_origem:
-                voo.origem = nova_origem
-            if novo_destino:
-                voo.destino = novo_destino
-            if nova_data:
-                voo.data = nova_data
-            if novo_piloto:
-                voo.piloto = novo_piloto
-            if nova_aeromoca:
-                voo.aeromoca = nova_aeromoca
+            if aeronave:
+                voo.aeronave = aeronave
+            print("A1")
+            if origem:
+                voo.origem = origem
+            print("A2")
+            if destino:
+                voo.destino = destino
+            print("A3")
+            if data:
+                voo.data = data
+            print("A4")
+            if hora:
+                hora_obj = datetime.strptime(hora, '%H:%M').time()
+                voo.horario_decolagem = hora_obj
+                print(hora_obj)
+                print(hora_obj.hour)
+            print("A5")
+            if piloto:
+                voo.piloto =piloto
+            print("A6")
+            if copiloto:    
+                voo.copiloto = copiloto
+            print("A7")
+            if aeromoca1:            
+                voo.aeromoca1 = aeromoca1
+            print("A8")
+            if aeromoca2:
+                voo.aeromoca2 = aeromoca2
+
+            print("INDo pro atualizar")
 
             if self.dao_voos.atualizar(voo):
                 return True, "Dados do voo alterados com sucesso!"
         except Exception as e:
-            print(f"Erro ao atualizar voo: {e}")
+            print(f"Erro ao atualizar voo no controlador: {e}")
             return False, "Erro ao alterar os dados do voo."
 
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
-            print("Voo não encontrado.")
             return False, "Voo não encontrado."
+
         try:
             if self.dao_voos.deletar(cod):
                 return True, "Voo deletado com sucesso!"
