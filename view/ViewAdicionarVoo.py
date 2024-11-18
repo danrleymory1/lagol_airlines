@@ -91,18 +91,16 @@ class ViewAdicionarVoo:
 
                 # Cadastro de voo no sistema
                 sucesso, mensagem = self.controlador.controlador_voo.cadastrar_voo(
-                    codigo_voo, valores['aeronave'], valores['origem'], valores['destino'],
+                    valores['aeronave'], valores['origem'], valores['destino'],
                     valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
                     valores['aeromoca1'], valores['aeromoca2']
                 )
-
-
 
                 # Exibir mensagem de confirmação ou erro
                 if sucesso:
                     Sg.popup("Cadastro de voo realizado com sucesso")
                     break
                 else:
-                    Sg.popup(mensagem or "Falha no cadastro do voo, verifique os dados e tente novamente.")
+                    Sg.popup(mensagem)
 
         self.janela.close()
