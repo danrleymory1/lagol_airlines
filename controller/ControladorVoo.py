@@ -98,7 +98,7 @@ class ControladorVoo:
             voo = self.dao_voos.buscar_por_codigo(cod)
             if voo:
                 # Verificando e imprimindo o horário de decolagem
-                print(f"Horário de decolagem: {voo.horario_decolagem}")
+                print(f"Voo selecionado: {voo.__dict__}")  # Para depuração
             return voo
         except Exception as e:
             print(f"Erro ao buscar voo: {e}")
