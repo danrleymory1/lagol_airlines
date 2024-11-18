@@ -51,8 +51,9 @@ class TelaAdmin:
         TelaFuncionarios(self.controlador).abrir()
 
     def gerenciar_avioes(self):
-        # Implementação futura
-        Sg.popup("Gerenciar Aviões - Em desenvolvimento")
+        self.janela.close()
+        from view.ViewAeronaves import TelaGerenciarAeronaves
+        TelaGerenciarAeronaves(self.controlador).abrir()
 
     def gerenciar_voos(self):
         self.janela.close()

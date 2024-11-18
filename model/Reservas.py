@@ -4,7 +4,7 @@ from model.Pessoas import Clientes, Passageiros
 
 class Reservas:
 
-    def __init__(self, cod:str, cliente:Clientes, passageiro:Passageiros, voo:Voos, assento:str):
+    def __init__(self, cod:str, cliente:Clientes, passageiro:Passageiros, voo:Voos, assento:str=None):
 
         self.__cod = cod
         self.__cliente = cliente

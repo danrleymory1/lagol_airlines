@@ -4,6 +4,7 @@ from controller.ControladorCliente import Controladorcliente
 from controller.ControladorAdminLogin import ControladorAdminLogin
 from controller.ControladorFuncionario import ControladorFuncionario
 from controller.ControladorVoo import ControladorVoo
+from controller.ControladorAeronave import ControladorAeronaves
 from view.ViewLogin import TelaLogin
 
 class ControladorSistema:
@@ -13,6 +14,7 @@ class ControladorSistema:
         self.__controlador_funcionario = ControladorFuncionario()
         self.__controlador_voo = ControladorVoo()
         self.__controlador_reserva = ControladorReserva()
+        self.__controlador_aeronave = ControladorAeronaves()
 
     @property
     def controlador_cliente(self):
@@ -33,6 +35,10 @@ class ControladorSistema:
     @property
     def controlador_reserva(self):
         return self.__controlador_reserva
+    
+    @property
+    def controlador_aeronave(self):
+        return self.__controlador_aeronave
 
     def iniciar(self):
         app = TelaLogin(self)

@@ -23,7 +23,8 @@ class TelaMinhasReservas:
 
             layout += [
                 [Sg.Text(f"Voo: {reserva.voo}   Origem: {voo.origem}   Passageiro: {reserva.passageiro}", size=(50, 1))],
-                [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}   Bagagens: {reserva.quant_bagagem}   Assento: {reserva.assento}", size=(50, 1))],
+                [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}", size=(50, 1))],
+                [Sg.Text(f"Bagagens: {reserva.quant_bagagem}   Assento: {reserva.assento}", size=(50, 1))],
                 [
                     Sg.Button("Adicionar bagagem", key=f"add_bagagem_{i}", size=(15, 1)),
                     Sg.Button("Alterar assento", key=f"alterar_assento_{i}", size=(15, 1)),
@@ -53,7 +54,7 @@ class TelaMinhasReservas:
                 if event == f"add_bagagem_{i}":
                     Sg.popup(f"Função não implementada ainda")
                 elif event == f"alterar_assento_{i}":
-                    Sg.popup(f"Função não implementada ainda")
+                    self.ir_para_tela_selecionar_assento(self._reservas[i], i)
                 elif event == f"ver_ticket_{i}":
                     self.ir_para_tela_ticket(self._reservas[i].cod)
                 elif event == f"remarcar_voo_{i}":
@@ -65,9 +66,18 @@ class TelaMinhasReservas:
         self.janela.close()
         from view.ViewCliente import TelaCliente
         TelaCliente(self.controlador).abrir()
-    
+
     def ir_para_tela_ticket(self, reserva_cod):
         self.janela.close()
         from view.ViewVerTicket import TelaVerTicket
         TelaVerTicket(self.controlador, reserva_cod).abrir()
 
+    def ir_para_tela_selecionar_assento(self, reserva, index):
+        voo = self.controlador.controlador_voo.buscar_voo_por_codigo(reserva.voo)
+        if isinstance(voo, str):  # Garantir que o voo seja um objeto correto
+            Sg.popup_error("Erro ao carregar informações do voo.")
+            return
+
+        self.janela.close()
+        from view.ViewSelecionarAssento import ViewSelecionarAssento
+        ViewSelecionarAssento(self.controlador, reserva).abrir()
