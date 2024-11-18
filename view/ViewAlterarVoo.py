@@ -5,10 +5,17 @@ class ViewAlterarVoo:
     def __init__(self, controlador, voo):
         self.controlador = controlador
         self.voo = voo  # Informações do voo a ser alterado
+        if not self.voo:  # Verifica se self.voo é None
+            raise ValueError("Não foi possível encontrar o voo para alterar.")
         self.janela = None
         self.criar_janela()
 
     def criar_janela(self):
+        # Verificar se self.voo é None
+        if not self.voo:
+            Sg.popup("Erro: voo não encontrado!")
+            return
+
         # Lista de opções para aviões, pilotos, copilotos e aeromoças
         avioes = ["Avião 1", "Avião 2", "Avião 3"]
         pilotos = ["Piloto 1", "Piloto 2"]
