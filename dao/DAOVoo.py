@@ -53,7 +53,12 @@ class DAOVoo(DAO):
 
     def deletar(self, cod: str):
         try:
-            result = self.__collection.delete_one({"cod": cod})
+            print(cod)
+            print(f"Usando a coleção: {self.__collection.name}")
+            result = self.__collection.delete_one(
+                {"cod": int(cod)})
+            print(result)
+            print(result.deleted_count)
             return result.deleted_count > 0
         except Exception as e:
             print(f"Erro ao deletar voo: {e}")

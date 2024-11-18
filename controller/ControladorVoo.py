@@ -151,6 +151,7 @@ class ControladorVoo:
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)
         if not voo:
+            print("Voo não encontrado.")
             return False, "Voo não encontrado."
 
         try:
