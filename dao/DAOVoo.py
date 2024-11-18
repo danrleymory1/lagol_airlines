@@ -51,6 +51,7 @@ class DAOVoo(DAO):
             return False
 
     def voo_to_dict(self, voo: Voos):
+        print(voo.horario_decolagem)
         """Converte um objeto Voos em um dicionário para armazenamento."""
         return {
             "cod": voo.cod,
@@ -59,9 +60,9 @@ class DAOVoo(DAO):
             "origem": voo.origem,
             "destino": voo.destino,
             "data": voo.data.isoformat() if isinstance(voo.data, datetime.datetime) else voo.data,
-            "pilotos": [piloto.to_dict() for piloto in voo.pilotos] if isinstance(voo.pilotos, list) else voo.pilotos,
-            "aeromocas": [aeromoca.to_dict() for aeromoca in voo.aeromocas] if isinstance(voo.aeromocas, list) else voo.aeromocas,
-            "horario_decolagem": voo.horario_decolagem if hasattr(voo, 'horario_decolagem') else None
+            "pilotos": [voo.piloto, voo.copiloto],
+            "aeromocas": [voo.aeromoca1, voo.aeromoca2],
+            "horario_decolagem": voo.horario_decolagem.hour + voo.horario_decolagem.minute
         }
 
     def dict_to_voo(self, voo_dict: dict):
