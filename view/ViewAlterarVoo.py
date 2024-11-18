@@ -97,6 +97,7 @@ class ViewAlterarVoo:
                     continue
 
                 # Cadastro de voo no sistema
+                
                 sucesso, mensagem = self.controlador.controlador_voo.alterar_voo(self.voo.cod,
                     valores['aeronave'], valores['origem'], valores['destino'],
                     valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
