@@ -129,6 +129,9 @@ class ControladorReserva:
         if novo_assento not in total_assentos:
             return False, "Assento inválido para esta aeronave."
 
+        if reserva_cod in voo.assentos and voo.assentos[reserva_cod] != novo_assento:
+            del voo.assentos[reserva_cod]
+
         voo.assentos[novo_assento] = reserva.passageiro
         sucesso = self.__dao_voo.atualizar_assentos(voo.cod, reserva.cod, voo.assentos)
         if sucesso:
