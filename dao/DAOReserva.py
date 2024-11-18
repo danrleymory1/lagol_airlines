@@ -32,7 +32,6 @@ class DAOReserva(DAO):
         return None
 
 
-
     def buscar_reservas(self, filtros):
         print(filtros)
         reservas_dict = self.__collection.find(filtros)
@@ -71,6 +70,17 @@ class DAOReserva(DAO):
             return result.modified_count > 0
         except Exception as e:
             print(f"Erro ao atualizar reserva: {e}")
+            return False
+
+    def atualizar_assento(self, reserva_cod, novo_assento):
+        try:
+            result = self.__collection.update_one(
+                {"cod": reserva_cod},
+                {"$set": {"assento": novo_assento}}
+            )
+            return result.modified_count > 0
+        except Exception as e:
+            print(f"Erro ao atualizar assento da reserva: {e}")
             return False
 
     def deletar(self, cod):

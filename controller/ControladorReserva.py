@@ -130,10 +130,10 @@ class ControladorReserva:
             return False, "Assento inválido para esta aeronave."
 
         voo.assentos[novo_assento] = reserva.passageiro
-        sucesso = self.__dao_voo.atualizar(voo)
+        sucesso = self.__dao_voo.atualizar_assentos(voo.cod, reserva.cod, voo.assentos)
         if sucesso:
             reserva.assento = novo_assento
-            self.__dao_reserva.atualizar(reserva)
+            self.__dao_reserva.atualizar_assento(reserva.cod, voo.assentos)
             return True, "Assento atualizado com sucesso."
         else:
             return False, "Erro ao atualizar o assento."

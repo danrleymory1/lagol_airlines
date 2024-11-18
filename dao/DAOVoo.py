@@ -30,7 +30,6 @@ class DAOVoo(DAO):
         return None
 
 
-
     def buscar_voos(self):
         voos_dict = self.__collection.find()
         voos_list = []
@@ -39,8 +38,6 @@ class DAOVoo(DAO):
         return voos_list
 
     def atualizar(self, voo: Voos):
-        
-        
         try:
             result = self.__collection.update_one(
                 {"cod": voo.cod},
@@ -49,6 +46,25 @@ class DAOVoo(DAO):
             return result.modified_count > 0
         except Exception as e:
             print(f"Erro ao atualizar voo: {e}")
+            return False
+
+    def atualizar_assentos(self, cod_voo, reserva_cod, assento):
+        try:
+            voo = self.buscar_por_codigo(cod_voo)
+            if not voo:
+                print("Voo não encontrado para atualizar assentos.")
+                return False
+
+            # Adiciona ou substitui o assento com o código da reserva como chave
+            voo.assentos[reserva_cod] = assento
+
+            result = self.__collection.update_one(
+                {"cod": cod_voo},
+                {"$set": {"assentos": voo.assentos}}
+            )
+            return result.modified_count > 0
+        except Exception as e:
+            print(f"Erro ao atualizar os assentos do voo: {e}")
             return False
 
     def deletar(self, cod: str):
