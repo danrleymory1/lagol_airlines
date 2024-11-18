@@ -90,9 +90,6 @@ class ViewAdicionarVoo:
                 if not sucesso:
                     continue
 
-                # Gerar código automaticamente (incrementando a quantidade de voos cadastrados)
-                codigo_voo = self.controlador.controlador_voo.gerar_codigo_voo()
-
                 
                 # Cadastro de voo no sistema
                 sucesso, mensagem = self.controlador.controlador_voo.cadastrar_voo(
