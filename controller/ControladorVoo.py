@@ -51,7 +51,7 @@ class ControladorVoo:
                 raise ValueError("Entrada em 'aeromoça 1' inválida, tente novamente")
 
             # Validação da Aeromoça 2
-            if not aeromoca2:
+            if not aeromoca2 or aeromoca1 == aeromoca2:
                 raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
 
             # Validação da Hora de Decolagem

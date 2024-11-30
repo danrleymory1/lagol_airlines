@@ -54,9 +54,11 @@ class ViewAlterarVoo:
                 raise ValueError("Informação alterada inválida, por favor, tente novamente")
 
             # Validação da Data
+            if not valores['data']:  # Verifica se o campo de data está vazio
+                raise ValueError("Entrada em 'data' inválida, tente novamente")
             data = datetime.strptime(valores['data'], '%d/%m/%Y')
             if data <= datetime.now():
-                raise ValueError("Informação alterada inválida, por favor, tente novamente")
+                raise ValueError("Entrada em 'data' inválida, tente novamente")
 
             # Validação do Piloto
             if not valores['piloto']:
