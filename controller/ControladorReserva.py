@@ -1,3 +1,4 @@
+from datetime import datetime
 from model.Reservas import Reservas
 from dao.DAOReserva import DAOReserva
 from dao.DAOVoo import DAOVoo
@@ -140,4 +141,34 @@ class ControladorReserva:
             return True, "Assento atualizado com sucesso."
         else:
             return False, "Erro ao atualizar o assento."
+        
+    def validar_data(self, data):
+        try:
+            data = datetime.strptime(data, "%d/%m/%Y")
+                        
+            hoje = datetime.now().date()
+                        
+            if data.date() > hoje:
+                return False, "Data de nascimento inválida."
+            
+            return True, "Data válida."
+        except ValueError:
+            return False, "Data de nascimento inválida."
+        
+    def validar_nome(self, nome):
+
+        if not nome:
+            return False, "Nome inválido."
+        elif len(nome) < 3:
+            return False, "Nome inválido."
+        return True, "Nome válido."
+    
+    def validar_cpf(self, cpf):
+        if not cpf:
+            return False, "CPF inválido."
+        elif len(cpf) != 11:
+            return False, "CPF inválido."
+        elif not cpf.isdigit():
+            return False, "CPF inválido."
+        return True, "CPF válido."
 

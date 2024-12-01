@@ -43,8 +43,8 @@ class TelaVerVoosCliente:
                 ])
             return voos_layout
         else:
-            Sg.popup("Informação", "Nenhum voo cadastrado.")
-            return [[Sg.Text("Nenhum voo cadastrado.")]]
+            Sg.popup("Não há voos disponiveis.")
+            return
 
     def abrir(self):
         while True:
