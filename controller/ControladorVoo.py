@@ -68,10 +68,17 @@ class ControladorVoo:
             # Gerar código único
             codigo_voo = self.gerar_codigo_voo()
 
+            assentos = {}
+            for fileira in range(1, aeronave.fileiras + 1):
+                for coluna in range(aeronave.assentos_por_fileira):
+                    assento = f"{fileira}{chr(65 + coluna)}"
+                    assentos[assento] = None  # Assento começa desocupado
+
             # Criar o voo
             voo = Voos(
                 cod=codigo_voo,
                 aeronave=aeronave,
+                assentos=assentos,  # Passar os assentos gerados
                 origem=origem,
                 destino=destino,
                 data=data_obj,  # Usando data_obj após a validação
@@ -102,7 +109,10 @@ class ControladorVoo:
 
     def buscar_voo_por_codigo(self, cod):
         try:
-            return self.dao_voos.buscar_por_codigo(cod)
+            voo_dict = self.dao_voos.buscar_por_codigo(cod)
+            if voo_dict:
+                return self.dao_voos.dict_to_voo(voo_dict)
+            return None
         except Exception as e:
             print(f"Erro ao buscar voo: {e}")
             return None
