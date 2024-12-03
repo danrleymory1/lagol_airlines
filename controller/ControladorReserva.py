@@ -24,7 +24,26 @@ class ControladorReserva:
         if not voo:
             return False, "Voo não encontrado."
 
-        reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=None)
+        assento_livre = None
+        for assento in voo.assentos:
+            for chave, valor in assento.items():
+                if valor is None:
+                    assento_livre = chave
+                    break
+            if assento_livre:
+                break
+
+        if not assento_livre:
+            return False, "Não há assentos disponíveis para este voo."
+
+        for assento in voo.assentos:
+            if assento_livre in assento:
+                assento[assento_livre] = cod
+                break
+
+        self.__dao_voo.atualizar(voo)
+
+        reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=assento_livre)
 
         print(reserva)
 

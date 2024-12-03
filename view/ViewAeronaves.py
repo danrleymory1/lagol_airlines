@@ -28,9 +28,9 @@ class TelaGerenciarAeronaves:
             aeronaves_layout = []
             for aeronave in aeronaves:
                 aeronaves_layout.append([
-                    Sg.Text(f"{aeronave.modelo.nome:<20} {aeronave.fileiras:<10} {aeronave.assentos_por_fileira:<10} {aeronave.max_bagagens:<10}"),
+                    Sg.Text(f"{aeronave.modelo.name:<20} {aeronave.fileiras:<10} {aeronave.assentos_por_fileira:<10} {aeronave.max_bagagens:<10}"),
                     Sg.Push(),
-                    Sg.Button('Deletar', key=f'deletar_{aeronave.modelo.nome}', size=(10, 1))  # Botão de deletar
+                    Sg.Button('Deletar', key=f'deletar_{aeronave.modelo.name}', size=(10, 1))  # Botão de deletar
                 ])
             return aeronaves_layout
         else:

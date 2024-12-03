@@ -16,6 +16,7 @@ class Voos:
         self.__copiloto = copiloto
         self.__aeromoca1 = aeromoca1
         self.__aeromoca2 = aeromoca2
+        self.__assentos = self.__gerar_assentos()
 
     # Propriedades e validadores
 
@@ -112,3 +113,20 @@ class Voos:
     @aeromoca2.setter
     def aeromoca2(self, new_aeromoca2):
         self.__aeromoca2 = new_aeromoca2
+
+    @property
+    def assentos(self):
+        return self.__assentos
+
+    @assentos.setter
+    def assentos(self, novos_assentos):
+        self.__assentos = novos_assentos
+
+    def __gerar_assentos(self):
+        """Gera a lista de dicionários com os assentos disponíveis."""
+        assentos = []
+        for fileira in range(1, self.__aeronave.fileiras + 1):
+            for coluna in range(self.__aeronave.assentos_por_fileira):
+                assento = f"{fileira}{chr(65 + coluna)}"
+                assentos.append({assento: None})
+        return assentos

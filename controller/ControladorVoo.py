@@ -1,5 +1,6 @@
 from dao.DAOVoo import DAOVoo
 from model.Voos import Voos
+from dao.DAOAeronaves import DAOAeronaves
 from model.Aeronaves import Aeronaves
 from model.Pessoas.Pilotos import Pilotos
 from model.Pessoas.Aeromocas import Aeromocas
@@ -9,6 +10,7 @@ class ControladorVoo:
     def __init__(self, controlador):
         self.dao_voos = DAOVoo()
         self.__controlador = controlador
+        self.dao_aeronave = DAOAeronaves()
 
     def gerar_codigo_voo(self):
         # Gera um código de voo automaticamente, incrementando a partir do último código.
@@ -20,7 +22,10 @@ class ControladorVoo:
 
     def cadastrar_voo(self, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
         try:
-            
+            aeronave = self.dao_aeronave.buscar_por_modelo(aeronave)
+            if not aeronave:
+                return False, "Aeronave não encontrada. Verifique o nome informado."
+
             # Validação da Aeronave
             if not aeronave:
                 raise ValueError("Entrada em 'Avião' inválida, tente novamente")
@@ -67,7 +72,6 @@ class ControladorVoo:
             voo = Voos(
                 cod=codigo_voo,
                 aeronave=aeronave,
-                assentos={},  # Implementar lógica para definir assentos
                 origem=origem,
                 destino=destino,
                 data=data_obj,  # Usando data_obj após a validação

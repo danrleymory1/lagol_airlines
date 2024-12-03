@@ -1,4 +1,5 @@
 from dao.DAO import DAO
+from dao.DAOAeronaves import DAOAeronaves
 from model.Voos import Voos
 from model.Aeronaves import Aeronaves
 from model.Pessoas.Pilotos import Pilotos
@@ -8,6 +9,7 @@ import datetime
 class DAOVoo(DAO):
     def __init__(self):
         super().__init__()
+        self.dao_aeronave = DAOAeronaves()
         self.__collection = self.db['voos']  # Collection de voos no banco de dados
 
     def adicionar(self, voo: Voos):
@@ -98,7 +100,7 @@ class DAOVoo(DAO):
         """Converte um objeto Voos em um dicionário para armazenamento."""
         return {
             "cod": voo.cod,
-            "aeronave": voo.aeronave.to_dict() if isinstance(voo.aeronave, Aeronaves) else voo.aeronave,
+            "aeronave": voo.aeronave.modelo,
             "assentos": voo.assentos,
             "origem": voo.origem,
             "destino": voo.destino,
@@ -124,9 +126,21 @@ class DAOVoo(DAO):
         elif isinstance(horario_decolagem, str) and len(horario_decolagem) == 5:
             pass  # Mantém a string como está se já estiver no formato correto
 
+        aeronave_data = voo_dict['aeronave']
+        if isinstance(aeronave_data, dict):  # Caso o valor seja um dicionário
+            modelo_nome = aeronave_data['modelo']
+        elif isinstance(aeronave_data, str):  # Caso o valor seja uma string
+            modelo_nome = aeronave_data
+        else:
+            raise ValueError("Formato de aeronave inválido no dicionário do voo.")
+
+        aeronave = self.dao_aeronave.buscar_por_modelo(modelo_nome)
+        if not aeronave:
+            raise ValueError(f"Aeronave não encontrada para o modelo: {modelo_nome}")
+
         return Voos(
             cod=voo_dict.get('cod', ''),
-            aeronave=Aeronaves.from_dict(voo_dict['aeronave']) if isinstance(voo_dict.get('aeronave'), dict) else voo_dict.get('aeronave'),
+            aeronave=aeronave,
             assentos=voo_dict.get('assentos', {}),
             origem=voo_dict.get('origem', ''),
             destino=voo_dict.get('destino', ''),
