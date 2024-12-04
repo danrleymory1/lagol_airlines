@@ -15,7 +15,7 @@ class ViewAlterarVoo:
     def criar_janela(self):
         # Busca as aeronaves cadastradas no sistema
         aeronaves = self.controlador.controlador_aeronave.listar_aeronaves()
-        avioes = [aeronave.modelo.nome for aeronave in aeronaves] if aeronaves else []
+        avioes = [aeronave.modelo.name for aeronave in aeronaves] if aeronaves else []
 
         # Busca os pilotos e copilotos cadastrados no sistema
         todos_funcionarios = self.controlador.controlador_funcionario.buscar_todos_funcionarios()

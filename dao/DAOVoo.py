@@ -22,6 +22,7 @@ class DAOVoo(DAO):
         """Busca um voo pelo código."""
         try:
             voo_dict = self.__collection.find_one({"cod": int(cod)})
+            print("Dados brutos do voo:", voo_dict)  # Adicione esta linha para inspecionar os dados
             if voo_dict:
                 return self.dict_to_voo(voo_dict)
             print(f"Nenhum voo encontrado com código: {cod}")
@@ -127,6 +128,7 @@ class DAOVoo(DAO):
             aeronave = self.dao_aeronave.buscar_por_modelo(modelo_nome)
             if not aeronave:
                 raise ValueError(f"Aeronave não encontrada para o modelo: {modelo_nome}")
+
 
             return Voos(
                 cod=voo_dict.get('cod', ''),

@@ -55,7 +55,6 @@ class ViewSelecionarAssento:
             if evento.startswith("ASSENTO_"):
                 assento = evento.replace("ASSENTO_", "")  # Extrai o nome do assento
                 self.assento_selecionado = assento  # Armazena o assento selecionado
-                print(assento)
                 # Atualiza as cores dos botões
                 for elemento in self.janela.key_dict.values():
                     if elemento.Key.startswith("ASSENTO_"):
@@ -69,7 +68,6 @@ class ViewSelecionarAssento:
                 if not self.assento_selecionado:
                     Sg.popup_error("Nenhum assento selecionado. Selecione um assento antes de confirmar.")
                 else:
-                    print(self.assento_selecionado)
                     sucesso, mensagem = self.controlador.controlador_reserva.atualizar_assento(
                         self.reserva.cod, self.assento_selecionado
                     )
