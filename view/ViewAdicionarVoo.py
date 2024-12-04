@@ -8,24 +8,24 @@ class ViewAdicionarVoo:
         self.criar_janela()
 
     def criar_janela(self):
-        # Busca as aeronaves cadastradas no sistema
         aeronaves = self.controlador.controlador_aeronave.listar_aeronaves()
         avioes = [aeronave.modelo.name for aeronave in aeronaves] if aeronaves else []
 
-        # Busca os pilotos e copilotos cadastrados no sistema
         todos_funcionarios = self.controlador.controlador_funcionario.buscar_todos_funcionarios()
         pilotos = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Piloto"]
-        copilotos = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Piloto"]
-
-        # Busca as aeromoças cadastradas no sistema
+        copilotos = pilotos  # Mesmo filtro de pilotos
         aeromocas = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Aeromoca"]
 
         layout = [
             [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave', readonly=True)],
             [Sg.Text('Origem'), Sg.Input(key='origem')],
             [Sg.Text('Destino'), Sg.Input(key='destino')],
-            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data', readonly=True), Sg.CalendarButton('Selecionar Data', target='data', format='%d/%m/%Y', default_date_m_d_y=(datetime.now().month, datetime.now().day, datetime.now().year))],
-            [Sg.Text('Hora de Decolagem'), Sg.Combo([f"{h:02d}:00" for h in range(24)], key='hora', readonly=True)],
+            [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data', readonly=True), Sg.CalendarButton('Selecionar Data', target='data', format='%d/%m/%Y')],
+            [Sg.Text('Hora de Decolagem'),
+             Sg.Combo([f"{h:02d}" for h in range(24)], key='hora', readonly=True, size=(5, 1)),
+             Sg.Text(':'),  # Espaço
+             Sg.Combo([f"{m:02d}" for m in range(0, 60, 5)], key='minuto', readonly=True, size=(5, 1))]
+            ,
             [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto', readonly=True)],
             [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto', readonly=True)],
             [Sg.Text('Aeromoça 1'), Sg.Combo(aeromocas, key='aeromoca1', readonly=True)],
@@ -34,81 +34,28 @@ class ViewAdicionarVoo:
         ]
         self.janela = Sg.Window('Adicionar Voo', layout)
 
-    def validar_dados(self, valores):
-        try:
-            # Validação da Aeronave
-            if not valores['aeronave']:
-                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
-
-            # Validação da Origem
-            if len(valores['origem']) < 3:
-                raise ValueError("Entrada em 'origem' inválida, tente novamente")
-
-            # Validação do Destino
-            if len(valores['destino']) < 3 or valores['destino'] == valores['origem']:
-                raise ValueError("Entrada em 'destino' inválida, tente novamente")
-
-            # Validação da Data
-            if not valores['data']:  # Verifica se o campo de data está vazio
-                raise ValueError("Entrada em 'data' inválida, tente novamente")
-            data = datetime.strptime(valores['data'], '%d/%m/%Y')
-            if data <= datetime.now():
-                raise ValueError("Entrada em 'data' inválida, tente novamente")
-
-            # Validação do Piloto
-            if not valores['piloto']:
-                raise ValueError("Entrada em 'piloto' inválida, tente novamente")
-
-            # Validação do Copiloto
-            if not valores['copiloto']:
-                raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
-            if valores['piloto'] == valores['copiloto']:  # Verifica se piloto e copiloto são os mesmos
-                raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
-
-            # Validação da Aeromoça 1
-            if not valores['aeromoca1']:
-                raise ValueError("Entrada em 'aeromoça 1' inválida, tente novamente")
-
-            # Validação da Aeromoça 2
-            if not valores['aeromoca2']:
-                raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
-            if valores['aeromoca1'] == valores['aeromoca2']:  # Verifica se as aeromoças são as mesmas
-                raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
-
-            # Validação da Hora de Decolagem
-            hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            return True, "Entrada em 'hora de decolagem' inválida, tente novamente", data, hora
-        
-        
-
-        except ValueError as e:
-            Sg.popup(str(e))
-            return False, str(e), None, None
-
     def abrir(self):
         while True:
             evento, valores = self.janela.read()
             if evento == Sg.WINDOW_CLOSED or evento == 'Cancelar':
                 break
             elif evento == 'Adicionar':
-                # Validação dos dados
-                sucesso, mensagem, data, hora = self.validar_dados(valores)
-                if not sucesso:
+                # Construção da hora completa
+                hora_selecionada = valores['hora']
+                minuto_selecionado = valores['minuto']
+                if not hora_selecionada or not minuto_selecionado:
+                    Sg.popup("Hora de decolagem inválida. Selecione a hora e os minutos.")
                     continue
+                hora_completa = f"{hora_selecionada}:{minuto_selecionado}"
 
-                
-                # Cadastro de voo no sistema
+                # Cadastro do voo
                 sucesso, mensagem = self.controlador.controlador_voo.cadastrar_voo(
                     valores['aeronave'], valores['origem'], valores['destino'],
-                    valores['data'], valores['hora'], valores['piloto'], valores['copiloto'],
+                    valores['data'], hora_completa, valores['piloto'], valores['copiloto'],
                     valores['aeromoca1'], valores['aeromoca2']
                 )
-
-                # Exibir mensagem de confirmação ou erro
+                Sg.popup(mensagem)
                 if sucesso:
-                    Sg.popup("Cadastro de voo realizado com sucesso")
                     break
-                else:
-                    Sg.popup(mensagem)
 
         self.janela.close()

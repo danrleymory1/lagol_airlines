@@ -22,79 +22,30 @@ class ControladorVoo:
 
     def cadastrar_voo(self, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
         try:
-            aeronave = self.dao_aeronave.buscar_por_modelo(aeronave)
-            if not aeronave:
-                return False, "Aeronave não encontrada. Verifique o nome informado."
+            if not aeronave or len(origem) < 3 or len(destino) < 3 or origem == destino or not data or not hora:
+                raise ValueError("Dados inválidos para cadastro do voo.")
+            if not piloto or not copiloto or piloto == copiloto or not aeromoca1 or not aeromoca2 or aeromoca1 == aeromoca2:
+                raise ValueError("Tripulação inválida.")
 
-            # Validação da Aeronave
-            if not aeronave:
-                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
-
-            # Validação da Origem
-            if len(origem) < 3:
-                raise ValueError("Entrada em 'origem' inválida, tente novamente")
-
-            # Validação do Destino
-            if len(destino) < 3 or destino == origem:
-                raise ValueError("Entrada em 'destino' inválida, tente novamente")
-
-            # Validação da Data
             data_obj = datetime.strptime(data, '%d/%m/%Y')
-            if data_obj <= datetime.now():
-                raise ValueError("Entrada em 'data' inválida, tente novamente")
-
-            # Validação do Piloto
-            if not piloto:
-                raise ValueError("Entrada em 'piloto' inválida, tente novamente")
-
-            # Validação do Copiloto
-            if not copiloto:
-                raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
-
-            # Validação da Aeromoça 1
-            if not aeromoca1:
-                raise ValueError("Entrada em 'aeromoça 1' inválida, tente novamente")
-
-            # Validação da Aeromoça 2
-            if not aeromoca2 or aeromoca1 == aeromoca2:
-                raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
-
-            # Validação da Hora de Decolagem
             hora_obj = datetime.strptime(hora, '%H:%M').time()
-           
-            if hora_obj.hour >= 24 or hora_obj.minute >= 60:
-                raise ValueError("Entrada em 'hora de decolagem' inválida, tente novamente")
+            if data_obj <= datetime.now():
+                raise ValueError("Data inválida.")
 
-            # Gerar código único
             codigo_voo = self.gerar_codigo_voo()
+            aeronave_obj = self.dao_aeronave.buscar_por_modelo(aeronave)
+            if not aeronave_obj:
+                raise ValueError("Aeronave não encontrada.")
 
-            assentos = {}
-            for fileira in range(1, aeronave.fileiras + 1):
-                for coluna in range(aeronave.assentos_por_fileira):
-                    assento = f"{fileira}{chr(65 + coluna)}"
-                    assentos[assento] = None  # Assento começa desocupado
+            assentos = {f"{fileira}{chr(65 + coluna)}": None for fileira in range(1, aeronave_obj.fileiras + 1) for
+                        coluna in range(aeronave_obj.assentos_por_fileira)}
+            voo = Voos(cod=codigo_voo, aeronave=aeronave_obj, assentos=assentos, origem=origem, destino=destino,
+                       data=data_obj, horario_decolagem=hora_obj, piloto=piloto, copiloto=copiloto, aeromoca1=aeromoca1,
+                       aeromoca2=aeromoca2)
 
-            # Criar o voo
-            voo = Voos(
-                cod=codigo_voo,
-                aeronave=aeronave,
-                assentos=assentos,  # Passar os assentos gerados
-                origem=origem,
-                destino=destino,
-                data=data_obj,  # Usando data_obj após a validação
-                horario_decolagem=hora_obj,  # Usando hora_obj após a validação
-                piloto=piloto,
-                copiloto=copiloto,
-                aeromoca1=aeromoca1,
-                aeromoca2=aeromoca2
-            )
-
-            # Persistir voo
             if self.dao_voos.adicionar(voo):
-                return True, "Cadastro de voo realizado com sucesso"
-            else:
-                return False, "Erro ao cadastrar o voo."
-
+                return True, "Voo cadastrado com sucesso."
+            return False, "Erro ao cadastrar voo."
         except ValueError as e:
             return False, str(e)
 
@@ -115,19 +66,43 @@ class ControladorVoo:
             print(f"Erro ao buscar voo: {e}")
             return None
 
-    def alterar_voo(self, voo, aeronave=None, origem=None, destino=None, data=None, hora=None, piloto=None, copiloto=None, aeromoca1=None, aeromoca2=None):
+    def alterar_voo(self, voo, aeronave=None, origem=None, destino=None, data=None, hora=None, piloto=None,
+                    copiloto=None, aeromoca1=None, aeromoca2=None):
         try:
-            # Atualização dos dados do voo
+            # Validações de entrada
+            if origem and len(origem) < 3:
+                raise ValueError("Origem inválida.")
+            if destino and (len(destino) < 3 or destino == origem):
+                raise ValueError("Destino inválido.")
+            if piloto and copiloto and piloto == copiloto:
+                raise ValueError("Piloto e copiloto não podem ser a mesma pessoa.")
+            if aeromoca1 and aeromoca2 and aeromoca1 == aeromoca2:
+                raise ValueError("As aeromoças não podem ser a mesma pessoa.")
+            if data:
+                data_obj = datetime.strptime(data, '%d/%m/%Y')
+                if data_obj <= datetime.now():
+                    raise ValueError("Data inválida.")
+            if hora:
+                hora_obj = datetime.strptime(hora, '%H:%M').time()
+            else:
+                hora_obj = voo.horario_decolagem
+
+            # Busca a aeronave se necessário
             if aeronave:
-                voo.aeronave = aeronave
+                aeronave_obj = self.dao_aeronave.buscar_por_modelo(aeronave)
+                if not aeronave_obj:
+                    raise ValueError("Aeronave não encontrada.")
+                voo.aeronave = aeronave_obj  # Atualiza com o objeto aeronave correto
+
+            # Atualiza os campos do voo
             if origem:
                 voo.origem = origem
             if destino:
                 voo.destino = destino
             if data:
-                voo.data = datetime.strptime(data, '%d/%m/%Y').date()
+                voo.data = data_obj
             if hora:
-                voo.horario_decolagem = datetime.strptime(hora, '%H:%M').time()
+                voo.horario_decolagem = hora_obj
             if piloto:
                 voo.piloto = piloto
             if copiloto:
@@ -137,17 +112,17 @@ class ControladorVoo:
             if aeromoca2:
                 voo.aeromoca2 = aeromoca2
 
-            # Persistir alterações no DAO
+            # Persistir no DAO
             sucesso = self.dao_voos.atualizar(voo)
             if sucesso:
-                return True, "Informação do voo alterado com sucesso!"
+                return True, "Voo alterado com sucesso."
             else:
-                return False, "Informação alterada inválida, por favor, tente novamente"
+                return False, "Erro ao alterar voo."
+        except ValueError as e:
+            return False, str(e)
         except Exception as e:
-            print(f"Erro ao alterar voo: {e}")
+            print(f"Erro inesperado ao alterar voo: {e}")
             return False, "Erro inesperado ao alterar voo."
-
-
 
     def deletar_voo(self, cod):
         voo = self.buscar_voo_por_codigo(cod)
