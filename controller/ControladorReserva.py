@@ -15,42 +15,53 @@ class ControladorReserva:
     def cadastrar_reserva(self, passageiro, cliente, voo_cod):
         print(cliente)
         print(cliente.cpf)
+
+        # Gerar um código único para a reserva
         while True:
             cod = ''.join(random.choices(string.digits + string.ascii_uppercase, k=5))
             if self.validar_codigo(cod):
                 break
 
+        # Buscar o voo pelo código
         voo = self.__dao_voo.buscar_por_codigo(voo_cod)
         if not voo:
             return False, "Voo não encontrado."
 
-        assento_livre = None
-        for assento in voo.assentos:
-            for chave, valor in assento.items():
-                if valor is None:
-                    assento_livre = chave
-                    break
-            if assento_livre:
-                break
+        # Coletar todos os assentos disponíveis (com valor `None`)
+        assentos_livres = [
+            chave for assento in voo.assentos
+            for chave, valor in assento.items()
+            if valor is None
+        ]
 
-        if not assento_livre:
+        if not assentos_livres:
             return False, "Não há assentos disponíveis para este voo."
 
+        # Selecionar um assento aleatório entre os disponíveis
+        assento_livre = random.choice(assentos_livres)
+
+        # Atualizar o assento selecionado no voo
         for assento in voo.assentos:
             if assento_livre in assento:
                 assento[assento_livre] = cod
                 break
 
-        self.__dao_voo.atualizar(voo)
+        # Persistir a atualização do voo no banco de dados
+        if not self.__dao_voo.atualizar(voo):
+            return False, "Erro ao atualizar informações do voo no banco de dados."
 
+        # Criar a reserva com o assento selecionado
         reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=assento_livre)
 
         print(reserva)
 
+        # Adicionar a reserva ao banco de dados
         if self.__dao_reserva.adicionar(reserva):
             return cod, "Reserva realizada com sucesso!"
         else:
             return False, "Erro ao cadastrar a reserva. Tente novamente."
+
+
 
     def validar_codigo(self, cod):
         if self.__dao_reserva.buscar_por_cod(cod):

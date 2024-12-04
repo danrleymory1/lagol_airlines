@@ -5,8 +5,7 @@ class ViewSelecionarAssento:
         self.controlador = controlador
         self.reserva = reserva
         self.janela = None
-        self.fileiras_disponiveis = []
-        self.assentos_disponiveis = []
+        self.assento_selecionado = None  # Variável para armazenar o assento selecionado
         self.criar_janela()
 
     def criar_janela(self):
@@ -27,41 +26,41 @@ class ViewSelecionarAssento:
                 for assento_map in voo.assentos:
                     if assento in assento_map and assento_map[assento] is not None:
                         cor = "red"  # Assento ocupado
-                linha.append(Sg.Button(assento, size=(5, 2), button_color=("white", cor), key=assento))
+                linha.append(Sg.Button(assento, size=(2, 1), button_color=("white", cor), key=f"ASSENTO_{assento}"))
             layout.append(linha)
 
-        layout.append([Sg.Button("Confirmar"), Sg.Button("Cancelar")])
+        layout.append([Sg.Button("Confirmar", key="CONFIRMAR"), Sg.Button("Cancelar", key="CANCELAR")])
         self.janela = Sg.Window("Selecionar Assento", layout)
 
     def abrir(self):
-        assento_selecionado = None  # Variável para armazenar o assento selecionado
-
         while True:
             evento, valores = self.janela.read()
 
-            if evento == Sg.WINDOW_CLOSED or evento == "Cancelar":
+            if evento in (Sg.WINDOW_CLOSED, "CANCELAR"):
                 self.retornar_tela_reservas()
                 break
 
-            # Verificar se um assento foi clicado
-            if isinstance(evento, str) and evento.isalnum():  # Verifica se o evento é um assento
-                assento_selecionado = evento  # Armazena o assento selecionado
-                # Atualiza a cor do botão selecionado para azul
+            # Verificar se o evento é de um botão de assento
+            if evento.startswith("ASSENTO_"):
+                assento = evento.replace("ASSENTO_", "")  # Extrai o nome do assento
+                self.assento_selecionado = assento  # Armazena o assento selecionado
+
+                # Atualiza as cores dos botões
                 for elemento in self.janela.key_dict.values():
-                    if hasattr(elemento, "ButtonColor") and elemento.Key == assento_selecionado:
-                        elemento.update(button_color=("white", "blue"))
-                    elif hasattr(elemento, "ButtonColor"):
-                        # Reseta as cores dos outros botões para verde se forem disponíveis
-                        elemento.update(button_color=("white", "green"))
+                    if elemento.Key.startswith("ASSENTO_"):
+                        if elemento.Key == evento:
+                            elemento.update(button_color=("white", "blue"))  # Azul para o selecionado
+                        else:
+                            elemento.update(button_color=("white", "green"))  # Verde para os outros
 
             # Quando confirmar, valida o assento selecionado
-            if evento == "Confirmar":
-                if not assento_selecionado:
+            if evento == "CONFIRMAR":
+                if not self.assento_selecionado:
                     Sg.popup_error("Nenhum assento selecionado. Selecione um assento antes de confirmar.")
                 else:
-                    # Atualizar a reserva com o assento selecionado
-                    sucesso, mensagem = self.controlador.controlador_reserva.atualizar_assento(self.reserva.cod,
-                                                                                               assento_selecionado)
+                    sucesso, mensagem = self.controlador.controlador_reserva.atualizar_assento(
+                        self.reserva.cod, self.assento_selecionado
+                    )
                     if sucesso:
                         Sg.popup("Assento atualizado com sucesso!")
                         self.retornar_tela_reservas()
