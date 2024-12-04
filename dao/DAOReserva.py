@@ -73,6 +73,9 @@ class DAOReserva(DAO):
             return False
 
     def atualizar_assento(self, reserva_cod, novo_assento):
+        """
+        Atualiza o assento de uma reserva específica no banco de dados.
+        """
         try:
             result = self.__collection.update_one(
                 {"cod": reserva_cod},

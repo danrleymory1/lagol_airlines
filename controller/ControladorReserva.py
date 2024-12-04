@@ -13,43 +13,42 @@ class ControladorReserva:
         self.__dao_aeronave = DAOAeronaves()
 
     def cadastrar_reserva(self, passageiro, cliente, voo_cod):
-        print(cliente)
-        print(cliente.cpf)
+        """Cadastra uma nova reserva, preservando assentos ocupados."""
         while True:
             cod = ''.join(random.choices(string.digits + string.ascii_uppercase, k=5))
             if self.validar_codigo(cod):
                 break
 
+        # Buscar voo pelo código
         voo = self.__dao_voo.buscar_por_codigo(voo_cod)
         if not voo:
             return False, "Voo não encontrado."
-
-        assento_livre = None
-        for assento in voo.assentos:
-            for chave, valor in assento.items():
-                if valor is None:
-                    assento_livre = chave
-                    break
-            if assento_livre:
-                break
-
-        if not assento_livre:
+        print(voo.assentos)
+        # Coletar todos os assentos disponíveis
+        assentos_livres = [
+            assento for assento_map in voo.assentos
+            for assento, reserva_cod in assento_map.items()
+            if reserva_cod is None  # Considera apenas os desocupados (valor None)
+        ]
+        print(assentos_livres)
+        if not assentos_livres:
             return False, "Não há assentos disponíveis para este voo."
 
-        for assento in voo.assentos:
-            if assento_livre in assento:
-                assento[assento_livre] = cod
-                break
+        # Selecionar um assento aleatório entre os disponíveis
+        assento_livre = random.choice(assentos_livres)
 
-        self.__dao_voo.atualizar(voo)
+        # Atualizar apenas o assento selecionado no banco
+        sucesso = self.__dao_voo.atualizar_assento(voo.cod, assento_livre, cod)
+        if not sucesso:
+            return False, "Erro ao atualizar informações do assento no banco de dados."
 
+        # Criar e salvar a reserva
         reserva = Reservas(cod=cod, passageiro=passageiro, cliente=cliente, voo=voo_cod, assento=assento_livre)
-
-        print(reserva)
-
         if self.__dao_reserva.adicionar(reserva):
             return cod, "Reserva realizada com sucesso!"
         else:
+            # Reverter a atualização no caso de erro ao salvar a reserva
+            self.__dao_voo.atualizar_assento(voo.cod, assento_livre, None)
             return False, "Erro ao cadastrar a reserva. Tente novamente."
 
     def validar_codigo(self, cod):
@@ -89,27 +88,38 @@ class ControladorReserva:
         return disponiveis[0] if disponiveis else None
 
     def listar_fileiras_disponiveis(self, voo_cod):
-        """Retorna uma lista de fileiras disponíveis com base no código do voo."""
+        """
+        Retorna todas as fileiras do voo, independentemente de estarem ocupadas.
+        """
         voo = self.__dao_voo.buscar_por_codigo(voo_cod)
         if not voo or not voo.assentos:
             return []
 
-        # Extrair fileiras únicas com base nos assentos do voo
-        fileiras = set(assento[:-1] for assento_map in voo.assentos for assento in assento_map.keys())
+        # Extrair todas as fileiras das chaves dos assentos
+        fileiras = set()
+        for assento_map in voo.assentos:
+            for assento in assento_map.keys():
+                fileiras.add(assento[:-1])  # Pega o número da fileira
+
         return sorted(fileiras)
 
-    def listar_assentos_disponiveis(self, voo_cod, fileira):
+    def listar_assentos(self, voo_cod, fileira):
+        """
+        Retorna todos os assentos da fileira, indicando se estão ocupados.
+        """
         voo = self.__dao_voo.buscar_por_codigo(voo_cod)
         if not voo or not voo.assentos:
             return []
 
-        # Filtrar assentos da fileira especificada
-        total_assentos = [assento for assento_map in voo.assentos for assento in assento_map.keys() if
-                          assento.startswith(fileira)]
-        ocupados = [assento for assento_map in voo.assentos for assento, reserva in assento_map.items() if
-                    reserva is not None]
+        # Retornar todos os assentos da fileira, com seu estado
+        assentos_da_fileira = []
+        for assento_map in voo.assentos:
+            for assento, reserva in assento_map.items():
+                if assento.startswith(fileira):
+                    estado = {"assento": assento, "ocupado": reserva is not None}
+                    assentos_da_fileira.append(estado)
 
-        return [assento for assento in total_assentos if assento not in ocupados]
+        return sorted(assentos_da_fileira, key=lambda x: x["assento"])
 
     def liberar_assento(self, reserva_cod, assento):
 
@@ -134,6 +144,9 @@ class ControladorReserva:
                 return False, "Erro ao liberar o assento."
 
     def atualizar_assento(self, reserva_cod, novo_assento):
+        """
+        Atualiza o assento de uma reserva específica e no voo correspondente.
+        """
         reserva = self.__dao_reserva.buscar_por_cod(reserva_cod)
         if not reserva:
             return False, "Reserva não encontrada."
@@ -142,39 +155,30 @@ class ControladorReserva:
         if not voo:
             return False, "Voo não encontrado."
 
-        # Verificar se o assento já está ocupado
-        ocupados = [assento for assento_map in voo.assentos for assento, cod_reserva in assento_map.items() if
-                    cod_reserva is not None]
-        if novo_assento in ocupados:
-            return False, "Assento já ocupado."
-
-        # Atualizar a lista de assentos no voo
+        # Verificar se o novo assento já está ocupado
         for assento_map in voo.assentos:
-            if novo_assento in assento_map:
-                assento_map[novo_assento] = reserva.cod
-                break
+            if novo_assento in assento_map and assento_map[novo_assento] is not None:
+                return False, "Assento já ocupado."
 
-        sucesso = self.__dao_voo.atualizar(voo)
-        if sucesso:
-            reserva.assento = novo_assento
-            self.__dao_reserva.atualizar(reserva)
-            return True, "Assento atualizado com sucesso."
+        sucesso = False
+
+        # Atualizar o assento no voo
+        for assento_map in voo.assentos:
+            for chave, valor in assento_map.items():
+                if valor == reserva.cod:  # Liberar o assento anterior
+                    sucesso = self.__dao_voo.atualizar_assento(voo.cod, chave, None)
+                if chave == novo_assento:  # Ocupar o novo assento
+                    sucesso = self.__dao_voo.atualizar_assento(voo.cod, chave, reserva.cod)
+
+        if not sucesso:
+            return False, "Erro ao atualizar os assentos no voo."
+
+        # Atualizar o assento na reserva
+        if self.__dao_reserva.atualizar_assento(reserva_cod, novo_assento):
+            return True, "Assento atualizado com sucesso!"
         else:
-            return False, "Erro ao atualizar o assento."
+            return False, "Erro ao atualizar o assento na reserva."
 
-    def validar_data(self, data):
-        try:
-            data = datetime.strptime(data, "%d/%m/%Y")
-                        
-            hoje = datetime.now().date()
-                        
-            if data.date() > hoje:
-                return False, "Data de nascimento inválida."
-            
-            return True, "Data válida."
-        except ValueError:
-            return False, "Data de nascimento inválida."
-        
     def validar_nome(self, nome):
 
         if not nome:

@@ -40,8 +40,22 @@ class DAOVoo(DAO):
             return []
 
     def atualizar(self, voo: Voos):
-        """Atualiza um voo no banco de dados."""
+        """Atualiza um voo no banco de dados, preservando assentos já ocupados."""
         try:
+            # Obter o estado atual do voo no banco de dados
+            voo_atual = self.buscar_por_codigo(voo.cod)
+            if not voo_atual:
+                raise ValueError(f"Voo com código {voo.cod} não encontrado para atualização.")
+
+            # Atualizar apenas os novos dados, preservando os assentos ocupados
+            for assento_map in voo_atual.assentos:
+                for assento, reserva_cod in assento_map.items():
+                    if reserva_cod is not None:
+                        for assento_map_voo in voo.assentos:
+                            if assento in assento_map_voo:
+                                assento_map_voo[assento] = reserva_cod
+
+            # Persistir no banco de dados
             result = self.__collection.update_one(
                 {"cod": voo.cod},
                 {"$set": self.voo_to_dict(voo)}
@@ -51,24 +65,19 @@ class DAOVoo(DAO):
             print(f"Erro ao atualizar voo: {e}")
             return False
 
-    def atualizar_assentos(self, cod_voo, reserva_cod, assento):
-        """Atualiza os assentos de um voo."""
+    def atualizar_assento(self, cod_voo, assento, novo_valor):
+        """
+        Atualiza o valor de um assento específico no voo no banco de dados.
+        """
         try:
-            voo = self.buscar_por_codigo(cod_voo)
-            if not voo:
-                print("Voo não encontrado para atualizar assentos.")
-                return False
-
-            # Adiciona ou substitui o assento com o código da reserva como chave
-            voo.assentos[assento] = reserva_cod
-
             result = self.__collection.update_one(
-                {"cod": cod_voo},
-                {"$set": {"assentos": voo.assentos}}
+                {"cod": cod_voo, "assentos": {"$elemMatch": {assento: {"$exists": True}}}},
+                {"$set": {"assentos.$[elem].{}".format(assento): novo_valor}},
+                array_filters=[{"elem.{}".format(assento): {"$exists": True}}]
             )
             return result.modified_count > 0
         except Exception as e:
-            print(f"Erro ao atualizar os assentos do voo: {e}")
+            print(f"Erro ao atualizar assento no voo: {e}")
             return False
 
     def deletar(self, cod: str):

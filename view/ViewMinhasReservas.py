@@ -8,7 +8,6 @@ class TelaMinhasReservas:
         self.janela = None
         self._reservas = self.controlador.controlador_reserva.buscar_reservas_por_cliente(self.controlador.controlador_cliente.cliente_logado.cpf)
         self.criar_janela()
-        
 
     def criar_janela(self):
         layout = []
@@ -19,27 +18,38 @@ class TelaMinhasReservas:
             self.janela = Sg.Window("Minhas Reservas", layout)
             return
 
-        # Para cada reserva, criamos um "card" com as informações e botões
         for i, reserva in enumerate(self._reservas):
-
             voo = self.controlador.controlador_voo.buscar_voo_por_codigo(reserva.voo)
-            print(voo)
-            layout += [
-                [Sg.Text(f"Voo: {reserva.cod}   Origem: {voo.origem}   Passageiro: {reserva.passageiro if reserva.passageiro else reserva.cliente}", size=(50, 1))],
-                [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}", size=(50, 1))],
-                [Sg.Text(f"Bagagens: {reserva.quant_bagagem}   Assento: {reserva.assento}", size=(50, 1))],
-                [
-                    Sg.Button("Adicionar bagagem", key=f"add_bagagem_{i}", size=(15, 1)),
-                    Sg.Button("Alterar assento", key=f"alterar_assento_{i}", size=(15, 1)),
-                    Sg.Button("Ver Ticket", key=f"ver_ticket_{i}", size=(10, 1)),
-                    Sg.Button("Remarcar voo", key=f"remarcar_voo_{i}", size=(15, 1)),
-                    Sg.Button("Cancelar", key=f"cancelar_{i}", size=(10, 1)),
-                ],
-                [Sg.HorizontalSeparator()],
-            ]
+            if voo:
+                # Atualizar o assento com base no estado atual do voo
+                assento_atualizado = None
+                for assento_map in voo.assentos:
+                    for chave, valor in assento_map.items():
+                        if valor == reserva.cod:
+                            assento_atualizado = chave
+                            break
+
+                reserva.assento = assento_atualizado
+
+                layout += [
+                    [Sg.Text(
+                        f"Voo: {reserva.cod}   Origem: {voo.origem}   Passageiro: {reserva.passageiro if reserva.passageiro else reserva.cliente}",
+                        size=(50, 1))],
+                    [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}", size=(50, 1))],
+                    [Sg.Text(f"Bagagens: {reserva.quant_bagagem}   Assento: {reserva.assento}", size=(50, 1))],
+                    [
+                        Sg.Button("Adicionar bagagem", key=f"add_bagagem_{i}", size=(15, 1)),
+                        Sg.Button("Alterar assento", key=f"alterar_assento_{i}", size=(15, 1)),
+                        Sg.Button("Ver Ticket", key=f"ver_ticket_{i}", size=(10, 1)),
+                        Sg.Button("Remarcar voo", key=f"remarcar_voo_{i}", size=(15, 1)),
+                        Sg.Button("Cancelar", key=f"cancelar_{i}", size=(10, 1)),
+                    ],
+                    [Sg.HorizontalSeparator()],
+                ]
+            else:
+                layout += [[Sg.Text(f"Erro ao carregar informações do voo para a reserva {reserva.cod}")]]
 
         layout.append([Sg.Button("Voltar", size=(10, 1))])
-
         self.janela = Sg.Window("Minhas Reservas", layout)
 
     def abrir(self):
