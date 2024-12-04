@@ -3,7 +3,7 @@ import datetime
 from model.Pessoas import Aeromocas, Pilotos
 
 class Voos:
-    def __init__(self, cod: str, aeronave: Aeronaves, assentos: dict, origem: str, destino: str, data: datetime.datetime, 
+    def __init__(self, cod: str, aeronave: Aeronaves, assentos: list, origem: str, destino: str, data: datetime.datetime,
                  horario_decolagem: str, piloto: Pilotos, copiloto: Pilotos, aeromoca1: Aeromocas, aeromoca2: Aeromocas):
         self.__cod = cod
         self.__aeronave = aeronave

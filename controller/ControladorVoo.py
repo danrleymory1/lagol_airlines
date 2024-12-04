@@ -98,8 +98,6 @@ class ControladorVoo:
         except ValueError as e:
             return False, str(e)
 
-
-
     def buscar_todos_voos(self):
         try:
             return self.dao_voos.buscar_voos()

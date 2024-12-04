@@ -19,13 +19,10 @@ class DAOVoo(DAO):
             return False
 
     def buscar_por_codigo(self, cod):
-        """Busca um voo pelo código."""
         try:
             voo_dict = self.__collection.find_one({"cod": int(cod)})
-            print("Dados brutos do voo:", voo_dict)  # Adicione esta linha para inspecionar os dados
             if voo_dict:
                 return self.dict_to_voo(voo_dict)
-            print(f"Nenhum voo encontrado com código: {cod}")
             return None
         except Exception as e:
             print(f"Erro ao buscar voo por código: {e}")
@@ -67,15 +64,13 @@ class DAOVoo(DAO):
             return False
 
     def atualizar_assento(self, cod_voo, assento, novo_valor):
-        """
-        Atualiza o valor de um assento específico no voo no banco de dados.
-        """
         try:
             result = self.__collection.update_one(
                 {"cod": cod_voo, "assentos": {"$elemMatch": {assento: {"$exists": True}}}},
                 {"$set": {"assentos.$[elem].{}".format(assento): novo_valor}},
                 array_filters=[{"elem.{}".format(assento): {"$exists": True}}]
             )
+            print(f"Atualizado assento {assento} para: {novo_valor}")  # Verificar se o valor foi alterado
             return result.modified_count > 0
         except Exception as e:
             print(f"Erro ao atualizar assento no voo: {e}")
@@ -92,6 +87,7 @@ class DAOVoo(DAO):
 
     def voo_to_dict(self, voo: Voos):
         """Converte um objeto Voos em um dicionário para armazenamento."""
+
         return {
             "cod": voo.cod,
             "aeronave": voo.aeronave.modelo.name,  # Armazena apenas o nome do modelo da aeronave
@@ -111,7 +107,6 @@ class DAOVoo(DAO):
         try:
             # Verificar se já é um objeto do tipo Voos
             if isinstance(voo_dict, Voos):
-                print("Objeto Voos já fornecido, retornando diretamente.")
                 return voo_dict
 
             if not isinstance(voo_dict, dict):
@@ -129,11 +124,24 @@ class DAOVoo(DAO):
             if not aeronave:
                 raise ValueError(f"Aeronave não encontrada para o modelo: {modelo_nome}")
 
+            assentos = voo_dict.get('assentos', [])
+            print("Assentos brutos no MongoDB:", assentos)  # Valida os dados antes de processar
+
+            # Processa cada assento corretamente
+            assentos_formatados = []
+            for assento_map in assentos:
+                if isinstance(assento_map, dict):
+                    chave = list(assento_map.keys())[0]
+                    valor = list(assento_map.values())[0]
+                    print(f"Processando assento: {chave}, Valor: {valor}")  # Mostra cada chave e valor
+                    assentos_formatados.append({chave: valor})
+                else:
+                    raise ValueError("Estrutura de assentos inválida.")
 
             return Voos(
                 cod=voo_dict.get('cod', ''),
                 aeronave=aeronave,
-                assentos=voo_dict.get('assentos', []),
+                assentos=assentos_formatados,
                 origem=voo_dict.get('origem', ''),
                 destino=voo_dict.get('destino', ''),
                 data=datetime.datetime.fromisoformat(voo_dict.get('data')) if isinstance(voo_dict.get('data'),
