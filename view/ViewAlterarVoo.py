@@ -26,7 +26,7 @@ class ViewAlterarVoo:
         aeromocas = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Aeromoca"]
 
         layout = [
-            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave',default_value=self.voo.aeronave)],
+            [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave',default_value=self.voo.aeronave, readonly=True)],
             [Sg.Text('Origem'), Sg.Input(key='origem', default_text=self.voo.origem)],
             [Sg.Text('Destino'), Sg.Input(key='destino', default_text=self.voo.destino)],
             [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data', default_text=str(self.voo.data.day) + "/" + str(self.voo.data.month) + "/" + str(self.voo.data.year)), Sg.CalendarButton('Selecionar Data', target='data', format='%d/%m/%Y', default_date_m_d_y=(self.voo.data.month, self.voo.data.day, self.voo.data.year))],
