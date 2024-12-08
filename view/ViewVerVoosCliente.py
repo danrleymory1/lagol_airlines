@@ -2,6 +2,8 @@ import sys
 import PySimpleGUI as Sg
 from PySimpleGUI import popup
 
+from view.ViewCliente import TelaCliente
+
 
 class TelaVerVoosCliente:
     def __init__(self, controlador):
@@ -11,6 +13,14 @@ class TelaVerVoosCliente:
 
     def criar_janela(self):
     # Cabeçalho e layout inicial
+
+        voos = self.carregar_voos()
+
+        if not voos:
+            Sg.popup("Não há voos disponiveis.")
+            TelaCliente(self.controlador).abrir()
+
+
         layout = [
             [Sg.Button('Retornar', size=(10, 1)), Sg.Push()],
             [Sg.Push(), Sg.Text('Ver voos', font=("Arial", 14)), Sg.Push()],
@@ -44,8 +54,8 @@ class TelaVerVoosCliente:
                 ])
             return voos_layout
         else:
-            Sg.popup("Não há voos disponiveis.")
-            return
+            
+            return None
 
     def abrir(self):
         while True:

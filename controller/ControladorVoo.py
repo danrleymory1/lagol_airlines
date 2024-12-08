@@ -36,9 +36,13 @@ class ControladorVoo:
             aeronave_obj = self.dao_aeronave.buscar_por_modelo(aeronave)
             if not aeronave_obj:
                 raise ValueError("Aeronave não encontrada.")
-
-            assentos = {f"{fileira}{chr(65 + coluna)}": None for fileira in range(1, aeronave_obj.fileiras + 1) for
-                        coluna in range(aeronave_obj.assentos_por_fileira)}
+            
+            assentos = []
+            for fileira in range(1, aeronave_obj.fileiras + 1):
+                for coluna in range(aeronave_obj.assentos_por_fileira):
+                    assento = f"{fileira}{chr(65 + coluna)}"
+                    assentos.append({assento: None})
+            
             voo = Voos(cod=codigo_voo, aeronave=aeronave_obj, assentos=assentos, origem=origem, destino=destino,
                        data=data_obj, horario_decolagem=hora_obj, piloto=piloto, copiloto=copiloto, aeromoca1=aeromoca1,
                        aeromoca2=aeromoca2)

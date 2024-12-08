@@ -16,7 +16,7 @@ class Voos:
         self.__copiloto = copiloto
         self.__aeromoca1 = aeromoca1
         self.__aeromoca2 = aeromoca2
-        self.__assentos = self.__gerar_assentos()
+      
 
     # Propriedades e validadores
 
@@ -44,8 +44,7 @@ class Voos:
     
     @assentos.setter
     def assentos(self, new_assentos):
-        if isinstance(new_assentos, dict):
-            self.__assentos = new_assentos
+        self.__assentos = new_assentos
 
     @property
     def origem(self):
@@ -113,14 +112,7 @@ class Voos:
     @aeromoca2.setter
     def aeromoca2(self, new_aeromoca2):
         self.__aeromoca2 = new_aeromoca2
-
-    @property
-    def assentos(self):
-        return self.__assentos
-
-    @assentos.setter
-    def assentos(self, novos_assentos):
-        self.__assentos = novos_assentos
+    
 
     def __gerar_assentos(self):
         """Gera a lista de dicionários com os assentos disponíveis."""

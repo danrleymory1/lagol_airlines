@@ -50,14 +50,15 @@ class ViewVerVoosAdm:
         layout = [
             [Sg.Text('Ver Voos', font=("Arial", 16), justification='center', expand_x=True)],
             [Sg.Text(f"{'Origem':<25}{'Destino':<25}{'Data':<15}{'Horário':<10}", font=("Arial", 10, "bold"))],
-            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(600, 390))],
+            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(600, 350))],
             [Sg.Push(), Sg.Button('Adicionar Voo', size=(12, 1)), Sg.Push()],  # Botão centralizado
-            [Sg.Button('Retornar', size=(10, 1))]
+            [Sg.Button('Retornar', size=(10, 1),),Sg.Push()]
         ]
         self.janela = Sg.Window('Ver Voos', layout, size=(640, 500), element_justification='left')
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
+        print(voos)
         voos_layout = []
         if voos:
             for voo in voos:

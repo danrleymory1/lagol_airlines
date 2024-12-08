@@ -11,6 +11,8 @@ class DAOVoo(DAO):
         self.__collection = self.db['voos']  # Collection de voos no banco de dados
 
     def adicionar(self, voo: Voos):
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        print(voo.assentos)
         try:
             result = self.__collection.insert_one(self.voo_to_dict(voo))
             return result.inserted_id is not None
@@ -22,6 +24,7 @@ class DAOVoo(DAO):
         try:
             voo_dict = self.__collection.find_one({"cod": int(cod)})
             if voo_dict:
+            
                 return self.dict_to_voo(voo_dict)
             return None
         except Exception as e:
@@ -129,6 +132,7 @@ class DAOVoo(DAO):
 
             # Processa cada assento corretamente
             assentos_formatados = []
+           
             for assento_map in assentos:
                 if isinstance(assento_map, dict):
                     chave = list(assento_map.keys())[0]
@@ -137,7 +141,8 @@ class DAOVoo(DAO):
                     assentos_formatados.append({chave: valor})
                 else:
                     raise ValueError("Estrutura de assentos inválida.")
-
+                
+            
             return Voos(
                 cod=voo_dict.get('cod', ''),
                 aeronave=aeronave,

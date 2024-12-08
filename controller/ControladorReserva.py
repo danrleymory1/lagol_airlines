@@ -45,10 +45,14 @@ class ControladorReserva:
         
     def buscar_assentos_disponiveis(self, voo_cod):
 
+        
+
         # Buscar o voo e validar existência
         voo = self.__dao_voo.buscar_por_codigo(voo_cod)
+        
         if not voo:
             return False, "Voo não encontrado."
+      
 
         reservas_voo = self.__dao_reserva.buscar_reservas({"voo": voo_cod})
 
@@ -63,9 +67,7 @@ class ControladorReserva:
         if not assentos_disponiveis:
             return None
         else:
-            print("AAAAAAAAAAs")
-            print(assentos_disponiveis)
-            print(voo.assentos)
+
             return assentos_disponiveis
 
 
@@ -98,9 +100,9 @@ class ControladorReserva:
             return False, "Erro ao deletar reserva. Tente novamente."
 
     def deletar_reservas_por_voo(self, voo_cod):
-        print(f"Deletando reservas do voo {voo_cod}")
+        #print(f"Deletando reservas do voo {voo_cod}")
         reservas = self.__dao_reserva.buscar_reservas({"voo": int(voo_cod)})
-        print(f"Reservas encontradas: {reservas}")
+        #print(f"Reservas encontradas: {reservas}")
         for reserva in reservas:
             self.deletar_reserva(reserva.cod)
 
@@ -232,9 +234,9 @@ class ControladorReserva:
         
         for voo in voos:    
             data = datetime.combine(voo.data, voo.horario_decolagem)
-            print("NNNNNNNNNNN")
-            print(len(self.buscar_assentos_disponiveis(voo.cod)))
-            if data >= (datetime.now() + timedelta(hours=1)) and len(self.buscar_assentos_disponiveis(voo.cod)) > 0:
+        
+            
+            if data >= (datetime.now() + timedelta(hours=1)) and self.buscar_assentos_disponiveis(voo.cod) != None:
                 voos_disponiveis.append(voo)
         return voos_disponiveis
     
