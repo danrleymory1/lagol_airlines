@@ -23,47 +23,49 @@ class ControladorVoo:
     def cadastrar_voo(self, aeronave, origem, destino, data, hora, piloto, copiloto, aeromoca1, aeromoca2):
         try:
             # Validação da Aeronave
-            if not valores['aeronave']:
+            if not aeronave:
                 raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
-            if len(valores['origem']) < 3:
+            if len(origem) < 3:
                 raise ValueError("Entrada em 'origem' inválida, tente novamente")
 
             # Validação do Destino
-            if len(valores['destino']) < 3 or valores['destino'] == valores['origem']:
+            if len(destino) < 3 or destino == origem:
                 raise ValueError("Entrada em 'destino' inválida, tente novamente")
 
             # Validação da Data
-            if not valores['data']:  # Verifica se o campo de data está vazio
+            if not data:  # Verifica se o campo de data está vazio
                 raise ValueError("Entrada em 'data' inválida, tente novamente")
-            data = datetime.strptime(valores['data'], '%d/%m/%Y')
+            data = datetime.strptime(data, '%d/%m/%Y')
             if data <= datetime.now():
                 raise ValueError("Entrada em 'data' inválida, tente novamente")
 
             # Validação do Piloto
-            if not valores['piloto']:
+            if not piloto:
                 raise ValueError("Entrada em 'piloto' inválida, tente novamente")
 
             # Validação do Copiloto
-            if not valores['copiloto']:
+            if not copiloto:
                 raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
-            if valores['piloto'] == valores['copiloto']:  # Verifica se piloto e copiloto são os mesmos
+            if piloto == copiloto:  # Verifica se piloto e copiloto são os mesmos
                 raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
 
             # Validação da Aeromoça 1
-            if not valores['aeromoca1']:
+            if not aeromoca1:
                 raise ValueError("Entrada em 'aeromoça 1' inválida, tente novamente")
 
             # Validação da Aeromoça 2
-            if not valores['aeromoca2']:
+            if not aeromoca2:
                 raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
-            if valores['aeromoca1'] == valores['aeromoca2']:  # Verifica se as aeromoças são as mesmas
+            if aeromoca1 == aeromoca2:  # Verifica se as aeromoças são as mesmas
                 raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
 
             # Validação da Hora de Decolagem
-            hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            return True, "Entrada em 'hora de decolagem' inválida, tente novamente", data, hora
+            try:
+                datetime.strptime(hora, '%H:%M').time()
+            except ValueError:
+                return False, "Entrada em 'hora de decolagem' inválida, tente novamente"
 
 
             codigo_voo = self.gerar_codigo_voo()
@@ -107,47 +109,49 @@ class ControladorVoo:
     def alterar_voo(self, voo, aeronave=None, origem=None, destino=None, data=None, hora=None, piloto=None,
                     copiloto=None, aeromoca1=None, aeromoca2=None):
         try:
-            if not valores['aeronave']:
+            if not aeronave:
                 raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
-            if len(valores['origem']) < 3:
+            if len(origem) < 3:
                 raise ValueError("Entrada em 'origem' inválida, tente novamente")
 
             # Validação do Destino
-            if len(valores['destino']) < 3 or valores['destino'] == valores['origem']:
+            if len(destino) < 3 or destino == origem:
                 raise ValueError("Entrada em 'destino' inválida, tente novamente")
 
             # Validação da Data
-            if not valores['data']:  # Verifica se o campo de data está vazio
+            if not data:  # Verifica se o campo de data está vazio
                 raise ValueError("Entrada em 'data' inválida, tente novamente")
-            data = datetime.strptime(valores['data'], '%d/%m/%Y')
+            data = datetime.strptime(data, '%d/%m/%Y')
             if data <= datetime.now():
                 raise ValueError("Entrada em 'data' inválida, tente novamente")
 
             # Validação do Piloto
-            if not valores['piloto']:
+            if not piloto:
                 raise ValueError("Entrada em 'piloto' inválida, tente novamente")
 
             # Validação do Copiloto
-            if not valores['copiloto']:
+            if not copiloto:
                 raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
-            if valores['piloto'] == valores['copiloto']:  # Verifica se piloto e copiloto são os mesmos
+            if piloto == copiloto:  # Verifica se piloto e copiloto são os mesmos
                 raise ValueError("Entrada em 'copiloto' inválida, tente novamente")
 
             # Validação da Aeromoça 1
-            if not valores['aeromoca1']:
+            if not aeromoca1:
                 raise ValueError("Entrada em 'aeromoça 1' inválida, tente novamente")
 
             # Validação da Aeromoça 2
-            if not valores['aeromoca2']:
+            if not aeromoca2:
                 raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
-            if valores['aeromoca1'] == valores['aeromoca2']:  # Verifica se as aeromoças são as mesmas
+            if aeromoca1 == aeromoca2:  # Verifica se as aeromoças são as mesmas
                 raise ValueError("Entrada em 'aeromoça 2' inválida, tente novamente")
 
             # Validação da Hora de Decolagem
-            hora = datetime.strptime(valores['hora'], '%H:%M').time()
-            return True, "Entrada em 'hora de decolagem' inválida, tente novamente", data, hora
+            try:
+                datetime.strptime(hora, '%H:%M').time()
+            except ValueError:
+                return False, "Entrada em 'hora de decolagem' inválida, tente novamente"
 
 
             # Busca a aeronave se necessário
@@ -163,7 +167,7 @@ class ControladorVoo:
             if destino:
                 voo.destino = destino
             if data:
-                voo.data = data_obj
+                voo.data = data
             if hora:
                 voo.horario_decolagem = hora
             if piloto:

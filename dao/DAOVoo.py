@@ -98,7 +98,7 @@ class DAOVoo(DAO):
             "origem": voo.origem,
             "destino": voo.destino,
             "data": voo.data.isoformat() if isinstance(voo.data, datetime.datetime) else voo.data,
-            "horario_decolagem": voo.horario_decolagem.strftime("%H:%M") if voo.horario_decolagem else None,
+            "horario_decolagem": voo.horario_decolagem if voo.horario_decolagem else None,
             "piloto": voo.piloto,
             "copiloto": voo.copiloto,
             "aeromoca1": voo.aeromoca1,
