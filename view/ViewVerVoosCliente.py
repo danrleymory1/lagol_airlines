@@ -31,7 +31,7 @@ class TelaVerVoosCliente:
                 Sg.Text("Horário", size=(10, 1)),
                 Sg.Text("", size=(8, 1)),  # Espaço para os botões
             ],  # Cabeçalho com tamanhos fixos
-            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(550, 300))],
+            [Sg.Column(voos, scrollable=True, vertical_scroll_only=True, size=(550, 300))],
         ]
 
         # Cria a janela
