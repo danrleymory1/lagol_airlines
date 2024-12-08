@@ -44,7 +44,7 @@ class ViewAdicionarVoo:
                 hora_selecionada = valores['hora']
                 minuto_selecionado = valores['minuto']
                 if not hora_selecionada or not minuto_selecionado:
-                    Sg.popup("Hora de decolagem inválida. Selecione a hora e os minutos.")
+                    Sg.popup("Entrada em 'Hora de decolagem' inválida, tente novamente")
                     continue
                 hora_completa = f"{hora_selecionada}:{minuto_selecionado}"
 
