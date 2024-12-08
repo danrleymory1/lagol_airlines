@@ -81,13 +81,13 @@ class TelaMinhasReservas:
             # Processar eventos dos botões com base no índice da reserva
             for i in range(len(self._reservas)):
                 if event == f"add_bagagem_{i}":
-                    Sg.popup("Função não implementada ainda")
+                    self.ir_para_tela_add_bagagem(self._reservas[i].cod)
                 elif event == f"alterar_assento_{i}":
                     self.ir_para_tela_selecionar_assento(self._reservas[i], i)
                 elif event == f"ver_ticket_{i}":
                     self.ir_para_tela_ticket(self._reservas[i].cod)
                 elif event == f"remarcar_voo_{i}":
-                    Sg.popup("Função não implementada ainda")
+                    self.ir_para_tela_remarcar_voo(self._reservas[i].cod)
                 elif event == f"cancelar_{i}":
                     self.cancelar_voo(self._reservas[i].cod)
 
@@ -126,3 +126,9 @@ class TelaMinhasReservas:
             Sg.popup("Sua reserva NÃO foi cancelada!")
             self.janela.close()
             self.criar_janela()
+
+    def ir_para_tela_add_bagagem(self, reserva_cod):
+        Sg.popup("Função não implementada ainda")
+
+    def ir_para_tela_remarcar_voo(self, reserva_cod):
+        Sg.popup("Função não implementada ainda")
