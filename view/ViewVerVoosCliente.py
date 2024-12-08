@@ -30,9 +30,10 @@ class TelaVerVoosCliente:
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
-        if voos:
+        voos_disponiveis = self.controlador.controlador_reserva.buscar_voos_disponiveis(voos)
+        if voos_disponiveis:
             voos_layout = []
-            for voo in voos:
+            for voo in voos_disponiveis:
                 data = f"{voo.data.day}/{voo.data.month}/{voo.data.year}"
                 voos_layout.append([
                     Sg.Text(voo.origem, size=(15, 1)),  # Coluna "Origem"

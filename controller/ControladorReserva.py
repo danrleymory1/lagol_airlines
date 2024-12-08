@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from model.Reservas import Reservas
 from dao.DAOReserva import DAOReserva
 from dao.DAOVoo import DAOVoo
@@ -14,31 +14,20 @@ class ControladorReserva:
 
     #Mudança
     def cadastrar_reserva(self, passageiro, cliente, voo_cod):
+        
         while True:
             cod = ''.join(random.choices(string.digits + string.ascii_uppercase, k=5))
             if self.validar_codigo(cod):
                 break
 
-        # Buscar o voo e validar existência
-        voo = self.__dao_voo.buscar_por_codigo(voo_cod)
-        if not voo:
-            return False, "Voo não encontrado."
+            
+        assentos_disponiveis = self.buscar_assentos_disponiveis(voo_cod)
 
-        # Buscar todas as reservas do mesmo voo
-        reservas_voo = self.__dao_reserva.buscar_reservas({"voo": voo_cod})
-
-        # Determinar assentos disponíveis com base nas reservas
-        assentos_ocupados = {r.assento for r in reservas_voo if r.assento is not None}
-        assentos_disponiveis = [
-            assento for assento_map in voo.assentos
-            for assento, reserva_cod in assento_map.items()
-            if assento not in assentos_ocupados
-        ]
-
-        if not assentos_disponiveis:
+        if assentos_disponiveis == None:
             return False, "Não há assentos disponíveis para este voo."
 
         # Selecionar um assento disponível aleatoriamente
+        
         assento_livre = random.choice(assentos_disponiveis)
 
         # Atualizar o assento no banco de dados
@@ -53,6 +42,32 @@ class ControladorReserva:
         else:
             self.__dao_voo.atualizar_assento(voo_cod, assento_livre, None)
             return False, "Erro ao cadastrar a reserva. Tente novamente."
+        
+    def buscar_assentos_disponiveis(self, voo_cod):
+
+        # Buscar o voo e validar existência
+        voo = self.__dao_voo.buscar_por_codigo(voo_cod)
+        if not voo:
+            return False, "Voo não encontrado."
+
+        reservas_voo = self.__dao_reserva.buscar_reservas({"voo": voo_cod})
+
+        # Determinar assentos disponíveis com base nas reservas
+        assentos_ocupados = {r.assento for r in reservas_voo if r.assento is not None}
+        assentos_disponiveis = [
+            assento for assento_map in voo.assentos
+            for assento, reserva_cod in assento_map.items()
+            if assento not in assentos_ocupados
+        ]
+
+        if not assentos_disponiveis:
+            return None
+        else:
+            print("AAAAAAAAAAs")
+            print(assentos_disponiveis)
+            print(voo.assentos)
+            return assentos_disponiveis
+
 
     def validar_codigo(self, cod):
         if self.__dao_reserva.buscar_por_cod(cod):
@@ -211,4 +226,20 @@ class ControladorReserva:
             return True, "Data válida."
         except ValueError:
             return False, "Data de nascimento inválida."
+        
+    def buscar_voos_disponiveis(self, voos):
+        voos_disponiveis = []
+        
+        for voo in voos:    
+            data = datetime.combine(voo.data, voo.horario_decolagem)
+            print("NNNNNNNNNNN")
+            print(len(self.buscar_assentos_disponiveis(voo.cod)))
+            if data >= (datetime.now() + timedelta(hours=1)) and len(self.buscar_assentos_disponiveis(voo.cod)) > 0:
+                voos_disponiveis.append(voo)
+        return voos_disponiveis
+    
+    def verificar_data(self, voo):
+        if voo.data >= datetime.now():
+            return True
+        return False
 

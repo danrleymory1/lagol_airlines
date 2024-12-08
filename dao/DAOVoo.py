@@ -125,7 +125,7 @@ class DAOVoo(DAO):
                 raise ValueError(f"Aeronave não encontrada para o modelo: {modelo_nome}")
 
             assentos = voo_dict.get('assentos', [])
-            print("Assentos brutos no MongoDB:", assentos)  # Valida os dados antes de processar
+            #print("Assentos brutos no MongoDB:", assentos)  # Valida os dados antes de processar
 
             # Processa cada assento corretamente
             assentos_formatados = []
@@ -133,7 +133,7 @@ class DAOVoo(DAO):
                 if isinstance(assento_map, dict):
                     chave = list(assento_map.keys())[0]
                     valor = list(assento_map.values())[0]
-                    print(f"Processando assento: {chave}, Valor: {valor}")  # Mostra cada chave e valor
+                    #print(f"Processando assento: {chave}, Valor: {valor}")  # Mostra cada chave e valor
                     assentos_formatados.append({chave: valor})
                 else:
                     raise ValueError("Estrutura de assentos inválida.")

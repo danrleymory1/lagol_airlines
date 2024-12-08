@@ -18,7 +18,8 @@ class TelaMinhasReservas:
         else:
             for i, reserva in enumerate(self._reservas):
                 voo = self.controlador.controlador_voo.buscar_voo_por_codigo(reserva.voo)
-                if voo:
+        
+                if voo and self.controlador.controlador_reserva.verificar_data(voo):
                     # Atualizar o assento com base no estado atual do voo
                     assento_atualizado = None
                     for assento_map in voo.assentos:
