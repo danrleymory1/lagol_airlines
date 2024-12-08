@@ -198,4 +198,17 @@ class ControladorReserva:
         elif not cpf.isdigit():
             return False, "CPF inválido."
         return True, "CPF válido."
+    
+    def validar_data(self, data):
+        try:
+            data = datetime.strptime(data, "%d/%m/%Y")
+                        
+            hoje = datetime.now().date()
+                        
+            if data.date() > hoje:
+                return False, "Data de nascimento inválida."
+            
+            return True, "Data válida."
+        except ValueError:
+            return False, "Data de nascimento inválida."
 

@@ -31,7 +31,7 @@ class TelaMinhasReservas:
 
                     layout_reservas += [
                         [Sg.Text(
-                            f"Voo: {reserva.cod}   Origem: {voo.origem}   Passageiro: "
+                            f"Ticket: {reserva.cod}   Origem: {voo.origem}   Passageiro: "
                             f"{reserva.passageiro if reserva.passageiro else reserva.cliente}",
                             size=(50, 1))],
                         [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}", size=(50, 1))],
