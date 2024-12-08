@@ -109,8 +109,6 @@ class ControladorVoo:
     def alterar_voo(self, voo, aeronave=None, origem=None, destino=None, data=None, hora=None, piloto=None,
                     copiloto=None, aeromoca1=None, aeromoca2=None):
         try:
-            if not aeronave:
-                raise ValueError("Entrada em 'Avião' inválida, tente novamente")
 
             # Validação da Origem
             if len(origem) < 3:
