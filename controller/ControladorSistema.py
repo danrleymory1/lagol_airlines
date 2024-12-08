@@ -13,7 +13,7 @@ class ControladorSistema:
         self.__controlador_admin_login = ControladorAdminLogin()
         self.__controlador_funcionario = ControladorFuncionario()
         self.__controlador_voo = ControladorVoo(self)
-        self.__controlador_reserva = ControladorReserva()
+        self.__controlador_reserva = ControladorReserva(self)
         self.__controlador_aeronave = ControladorAeronaves()
 
     @property

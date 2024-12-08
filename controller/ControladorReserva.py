@@ -7,7 +7,8 @@ import random
 import string
 
 class ControladorReserva:
-    def __init__(self):
+    def __init__(self, controladorSistema):
+        self.__controlador = controladorSistema
         self.__dao_reserva = DAOReserva()
         self.__dao_voo = DAOVoo()
         self.__dao_aeronave = DAOAeronaves()
@@ -83,7 +84,12 @@ class ControladorReserva:
         return self.__dao_reserva.buscar_reservas({"voo": voo_cod})
 
     def buscar_reservas_por_cliente(self, cpf_cliente):
-        return self.__dao_reserva.buscar_reservas({"cliente": cpf_cliente})
+        reservas = self.__dao_reserva.buscar_reservas({"cliente": cpf_cliente})
+        reservas_filtradas = []
+        for reserva in reservas:
+            if self.verificar_data(self.__controlador.controlador_voo.buscar_voo_por_codigo(reserva.voo)):
+                reservas_filtradas.append(reserva)
+        return reservas_filtradas
 
     def deletar_reserva(self, cod):
         reserva = self.__dao_reserva.buscar_por_cod(cod)
@@ -241,7 +247,8 @@ class ControladorReserva:
         return voos_disponiveis
     
     def verificar_data(self, voo):
-        if voo.data >= datetime.now():
+        data = datetime.combine(voo.data, voo.horario_decolagem)
+        if data >= datetime.now():
             return True
         return False
 
