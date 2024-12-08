@@ -62,7 +62,10 @@ class ViewVerVoosAdm:
         voos_layout = []
         if voos:
             for voo in voos:
-                horario_decolagem = voo.horario_decolagem.strftime('%H:%M')  # Converte para string
+                if (isinstance(voo.horario_decolagem, str)):
+                    horario_decolagem = voo.horario_decolagem
+                else:
+                    horario_decolagem = voo.horario_decolagem.strftime('%H:%M')  # Converte para string
                 voos_layout.append([
                     Sg.Text(
                         f"{voo.origem.ljust(25)}{voo.destino.ljust(25)}{voo.data.strftime('%d/%m/%Y').ljust(15)}{horario_decolagem.ljust(10)}"),

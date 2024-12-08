@@ -19,15 +19,19 @@ class ViewAlterarVoo:
         copilotos = pilotos
         aeromocas = [f"{funcionario.cpf} - {funcionario.nome}" for funcionario in todos_funcionarios if funcionario.cargo == "Aeromoca"]
 
+        hora_decolagem = self.voo.horario_decolagem
+        horas = f"{hora_decolagem.hour:02d}"
+        minutos = f"{hora_decolagem.minute:02d}"
+
         layout = [
             [Sg.Text('Aeronave'), Sg.Combo(avioes, key='aeronave', default_value=self.voo.aeronave, disabled=True)],
             [Sg.Text('Origem'), Sg.Input(key='origem', default_text=self.voo.origem)],
             [Sg.Text('Destino'), Sg.Input(key='destino', default_text=self.voo.destino)],
             [Sg.Text('Data (dd/mm/yyyy)'), Sg.Input(key='data', default_text=self.voo.data.strftime('%d/%m/%Y'))],
             [Sg.Text('Hora de Decolagem'),
-             Sg.Combo([f"{h:02d}" for h in range(24)], key='hora', readonly=True, size=(5, 1)),
+             Sg.Combo([f"{h:02d}" for h in range(24)], key='hora', readonly=True, size=(5, 1), default_value=horas),
              Sg.Text(':'),  # Espaço
-             Sg.Combo([f"{m:02d}" for m in range(0, 60, 5)], key='minuto', readonly=True, size=(5, 1))]
+             Sg.Combo([f"{m:02d}" for m in range(0, 60, 5)], key='minuto', readonly=True, size=(5, 1), default_value=minutos)]
             ,
             [Sg.Text('Piloto'), Sg.Combo(pilotos, key='piloto', default_value=self.voo.piloto)],
             [Sg.Text('Copiloto'), Sg.Combo(copilotos, key='copiloto', default_value=self.voo.copiloto)],
