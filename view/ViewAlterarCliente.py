@@ -10,14 +10,14 @@ class TelaAlterarCliente:
     def criar_janela(self):
         layout = [
             [Sg.Push(), Sg.Text("Nome:"), Sg.InputText(key='nome'), Sg.Push()],
-            [Sg.Push(), Sg.Text('Data de Nascimento:'), Sg.Input(key='data_nascimento'), Sg.CalendarButton('Data', target='data_nascimento', format='%d/%m/%Y'), Sg.Push()],
+            [Sg.Push(), Sg.Text('Data de Nascimento:', size=(15, 1)), Sg.Input(key='data_nascimento', size=(40, 1)), Sg.Push(), Sg.CalendarButton('Data', target='data_nascimento', format='%d/%m/%Y')],
             [Sg.Push(), Sg.Text("Nova Senha (opcional):"), Sg.InputText(key='nova_senha', password_char='*'), Sg.Push()],
             [Sg.Push(), Sg.Text("Confirme a Nova Senha:"), Sg.InputText(key='confirma_nova_senha', password_char='*'), Sg.Push()],
             [Sg.Push(), Sg.Button("Salvar Alterações"), Sg.Button("Deletar Cliente"), Sg.Button("Cancelar"), Sg.Push()]
         ]
 
         # Cria a janela
-        self.janela = Sg.Window("Alterar Cliente", layout, size=(400, 300))
+        self.janela = Sg.Window("Alterar Cliente", layout, size=(600, 400))
 
     def abrir(self):
         while True:

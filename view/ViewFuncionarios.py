@@ -68,7 +68,7 @@ class TelaFuncionarios:
         if funcionario:
             self.janela.close()
             from view.ViewAlterarFuncionario import TelaAlterarFuncionario
-            TelaAlterarFuncionario(self.controlador, funcionario).abrir()
+            TelaAlterarFuncionario(self.controlador, funcionario.cpf).abrir()
         else:
             Sg.popup_error("Erro", "Funcionário não encontrado.")
 

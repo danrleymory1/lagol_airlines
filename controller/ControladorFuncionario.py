@@ -14,7 +14,7 @@ class ControladorFuncionario:
 
         cpf_objeto = CPF()
         if not cpf_objeto.validate(cpf):
-            raise ValueError("CPF Inválido")
+            return False, "CPF Inválido"
         if self.__dao.buscar_por_cpf(cpf):
             return False, "Funcionário com esse CPF já cadastrado."
 
@@ -37,7 +37,10 @@ class ControladorFuncionario:
         return self.__dao.buscar_por_cpf(cpf)
 
     def alterar_funcionario(self, cpf, novo_nome):
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        print(cpf)
         funcionario = self.__dao.buscar_por_cpf(cpf)
+        
         if not funcionario:
             return False, "Funcionário não encontrado."
 

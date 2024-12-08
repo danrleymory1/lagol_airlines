@@ -1,3 +1,4 @@
+from datetime import datetime
 import sys
 import PySimpleGUI as Sg
 
@@ -35,7 +36,7 @@ class TelaMinhasReservas:
                             f"Ticket: {reserva.cod}   Origem: {voo.origem}   Passageiro: "
                             f"{reserva.passageiro if reserva.passageiro else reserva.cliente}",
                             size=(50, 1))],
-                        [Sg.Text(f"Data: {voo.data}   Destino: {voo.destino}", size=(50, 1))],
+                        [Sg.Text(f"Data: {datetime.combine(voo.data, voo.horario_decolagem)}   Destino: {voo.destino}", size=(50, 1))],
                         [Sg.Text(f"Bagagens: {reserva.quant_bagagem}   Assento: {reserva.assento}", size=(50, 1))],
                         [
                             Sg.Button("Adicionar bagagem", key=f"add_bagagem_{i}", size=(15, 1)),
