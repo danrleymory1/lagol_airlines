@@ -18,13 +18,12 @@ class DAOAeronaves(DAO):
             return False
 
     def buscar_por_modelo(self, modelo_nome: str):
-        """Busca uma aeronave pelo nome do modelo."""
+        """Busca uma aeronave pelo nome do modelo e retorna uma instância de Aeronaves."""
         try:
             aeronave_dict = self.__collection.find_one({"modelo": modelo_nome})
             if aeronave_dict:
-                modelo = ModeloAeronave[aeronave_dict['modelo'].replace(" ", "_").upper()]
-                aeronave = Aeronaves(modelo)
-                return aeronave
+                modelo = ModeloAeronave.from_modelo(aeronave_dict["modelo"])
+                return Aeronaves(modelo=modelo)
             return None
         except Exception as e:
             print(f"Erro ao buscar aeronave: {e}")
@@ -35,14 +34,15 @@ class DAOAeronaves(DAO):
         try:
             aeronaves = []
             for aeronave_dict in self.__collection.find():
-                modelo_nome = aeronave_dict.get('modelo')
+                modelo_nome = aeronave_dict.get('modelo')  # Obter o modelo do banco
                 if modelo_nome:
-                    modelo_key = modelo_nome.replace(" ", "_").upper()
-                    if modelo_key in ModeloAeronave.__members__:
-                        modelo = ModeloAeronave[modelo_key]
+                    try:
+                        # Converte o nome do modelo para o Enum ModeloAeronave
+                        modelo = ModeloAeronave.from_modelo(modelo_nome)
+                        # Instanciar a aeronave e adicioná-la à lista
                         aeronaves.append(Aeronaves(modelo=modelo))
-                    else:
-                        print(f"Modelo inválido no enum: {modelo_nome}")
+                    except ValueError:
+                        print(f"Modelo inválido ou desconhecido no registro: {modelo_nome}")
                 else:
                     print(f"Modelo ausente no registro: {aeronave_dict}")
             return aeronaves

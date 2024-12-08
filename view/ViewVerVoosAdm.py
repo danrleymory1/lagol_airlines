@@ -48,20 +48,27 @@ class ViewVerVoosAdm:
 
     def criar_janela(self):
         layout = [
-            [Sg.Button('Adicionar Voo', size=(12, 1)), Sg.Button('Retornar', size=(10, 1)), Sg.Push()],
-            [Sg.Push(), Sg.Text('Ver Voos', font=("Arial", 14)), Sg.Push()],
-            [Sg.Column([[Sg.Text(f"{'Origem':<20} {'Destino':<20} {'Data':<15} {'Horario'}")]])],  # Cabeçalho da lista
-            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(500, 300))],
+            [Sg.Text('Ver Voos', font=("Arial", 16), justification='center', expand_x=True)],
+            [Sg.Text(f"{'Origem':<25}{'Destino':<25}{'Data':<15}{'Horário':<10}", font=("Arial", 10, "bold"))],
+            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(600, 350))],
+            [Sg.Push(), Sg.Button('Adicionar Voo', size=(12, 1)), Sg.Push()],  # Botão centralizado
+            [Sg.Button('Retornar', size=(10, 1),),Sg.Push()]
         ]
-        self.janela = Sg.Window('Ver Voos', layout, size=(600, 500))
+        self.janela = Sg.Window('Ver Voos', layout, size=(640, 500), element_justification='left')
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
+        print(voos)
         voos_layout = []
         if voos:
             for voo in voos:
+                if (isinstance(voo.horario_decolagem, str)):
+                    horario_decolagem = voo.horario_decolagem
+                else:
+                    horario_decolagem = voo.horario_decolagem.strftime('%H:%M')  # Converte para string
                 voos_layout.append([
-                    Sg.Text(f"{voo.origem:<20} {voo.destino:<20} {voo.data.strftime('%d/%m/%Y')} {voo.horario_decolagem:<8}"),
+                    Sg.Text(
+                        f"{voo.origem.ljust(25)}{voo.destino.ljust(25)}{voo.data.strftime('%d/%m/%Y').ljust(15)}{horario_decolagem.ljust(10)}"),
                     Sg.Push(),
                     Sg.Button('Alterar', key=f'alterar_{voo.cod}', size=(8, 1)),
                     Sg.Button('Deletar', key=f'deletar_{voo.cod}', size=(8, 1))

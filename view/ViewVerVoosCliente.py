@@ -2,6 +2,8 @@ import sys
 import PySimpleGUI as Sg
 from PySimpleGUI import popup
 
+from view.ViewCliente import TelaCliente
+
 
 class TelaVerVoosCliente:
     def __init__(self, controlador):
@@ -11,6 +13,14 @@ class TelaVerVoosCliente:
 
     def criar_janela(self):
     # Cabeçalho e layout inicial
+
+        voos = self.carregar_voos()
+
+        if not voos:
+            Sg.popup("Não há voos disponiveis.")
+            TelaCliente(self.controlador).abrir()
+
+
         layout = [
             [Sg.Button('Retornar', size=(10, 1)), Sg.Push()],
             [Sg.Push(), Sg.Text('Ver voos', font=("Arial", 14)), Sg.Push()],
@@ -21,7 +31,7 @@ class TelaVerVoosCliente:
                 Sg.Text("Horário", size=(10, 1)),
                 Sg.Text("", size=(8, 1)),  # Espaço para os botões
             ],  # Cabeçalho com tamanhos fixos
-            [Sg.Column(self.carregar_voos(), scrollable=True, vertical_scroll_only=True, size=(550, 300))],
+            [Sg.Column(voos, scrollable=True, vertical_scroll_only=True, size=(550, 300))],
         ]
 
         # Cria a janela
@@ -30,9 +40,10 @@ class TelaVerVoosCliente:
 
     def carregar_voos(self):
         voos = self.controlador.controlador_voo.buscar_todos_voos()
-        if voos:
+        voos_disponiveis = self.controlador.controlador_reserva.buscar_voos_disponiveis(voos)
+        if voos_disponiveis:
             voos_layout = []
-            for voo in voos:
+            for voo in voos_disponiveis:
                 data = f"{voo.data.day}/{voo.data.month}/{voo.data.year}"
                 voos_layout.append([
                     Sg.Text(voo.origem, size=(15, 1)),  # Coluna "Origem"
@@ -43,8 +54,8 @@ class TelaVerVoosCliente:
                 ])
             return voos_layout
         else:
-            Sg.popup("Informação", "Nenhum voo cadastrado.")
-            return [[Sg.Text("Nenhum voo cadastrado.")]]
+            
+            return None
 
     def abrir(self):
         while True:

@@ -3,7 +3,7 @@ import datetime
 from model.Pessoas import Aeromocas, Pilotos
 
 class Voos:
-    def __init__(self, cod: str, aeronave: Aeronaves, assentos: dict, origem: str, destino: str, data: datetime.datetime, 
+    def __init__(self, cod: str, aeronave: Aeronaves, assentos: list, origem: str, destino: str, data: datetime.datetime,
                  horario_decolagem: str, piloto: Pilotos, copiloto: Pilotos, aeromoca1: Aeromocas, aeromoca2: Aeromocas):
         self.__cod = cod
         self.__aeronave = aeronave
@@ -16,6 +16,7 @@ class Voos:
         self.__copiloto = copiloto
         self.__aeromoca1 = aeromoca1
         self.__aeromoca2 = aeromoca2
+      
 
     # Propriedades e validadores
 
@@ -43,8 +44,7 @@ class Voos:
     
     @assentos.setter
     def assentos(self, new_assentos):
-        if isinstance(new_assentos, dict):
-            self.__assentos = new_assentos
+        self.__assentos = new_assentos
 
     @property
     def origem(self):
@@ -112,3 +112,13 @@ class Voos:
     @aeromoca2.setter
     def aeromoca2(self, new_aeromoca2):
         self.__aeromoca2 = new_aeromoca2
+    
+
+    def __gerar_assentos(self):
+        """Gera a lista de dicionários com os assentos disponíveis."""
+        assentos = []
+        for fileira in range(1, self.__aeronave.fileiras + 1):
+            for coluna in range(self.__aeronave.assentos_por_fileira):
+                assento = f"{fileira}{chr(65 + coluna)}"
+                assentos.append({assento: None})
+        return assentos

@@ -5,8 +5,6 @@ class TelaVerTicket:
     def __init__(self, controlador, reserva_cod):
         self.__controlador = controlador
 
-        print("AAAAAAAAAAAAAAAA")
-        print(reserva_cod)
         
         self.reserva = self.__controlador.controlador_reserva.buscar_reserva_por_cod(reserva_cod)
         if not self.reserva:

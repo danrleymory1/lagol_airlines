@@ -16,6 +16,8 @@ class DAOFuncionario(DAO):
             return False
 
     def buscar_por_cpf(self, cpf):
+        print("==============================================")
+        print(cpf)
         funcionario_dict = self.__collection.find_one({"cpf": cpf})
         if funcionario_dict:
             return Funcionarios(
@@ -36,6 +38,7 @@ class DAOFuncionario(DAO):
         return funcionarios
 
     def atualizar(self, funcionario):
+
         try:
             result = self.__collection.update_one(
                 {"cpf": funcionario.cpf},  # Usa o CPF como identificador
